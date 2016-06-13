@@ -6,7 +6,8 @@ import edu.mines.jtk.mosaic.*;
 import edu.mines.jtk.util.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
-/* Finite difference acoustic wave equation
+/** 
+ * Finite difference acoustic wave equation
  * solver for constant density.
  * 
  * @author Joseph Jennings, Stanford University
@@ -30,5 +31,23 @@ public class AcstcWfldFD {
 	public void adjointProp() {
 		
 	}
+	
 
+	
+	public boolean checkCFL(Sampling x, Sampling z, Sampling t, float[][] v) {
+		
+		boolean test = false;
+		
+		return test;
+	}
+	
+	public boolean checkPtsPerLength(Sampling x, Sampling z, float[][] v, float[] src) {
+		boolean test = false;
+		
+		return test;
+	}
+	
+	///////////////////////////////////////////////////////////////////////
+	// private
+	
 }
