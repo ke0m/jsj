@@ -42,12 +42,13 @@ def goBuildVelModel():
 def goBuildRickerSource():
   nt  = 1000
   dt  = 0.004
-  ft  = 0.0
+  ft  = -1.0
   f   = 30.0
-  st  = Sampling(nt,dt,ft)
+  st  = Sampling(nt,dt,ft)  
+  stp = Sampling(nt,dt,0.0) # Always plot from t=0
   src = Source(st)
   rck = src.ricker(f)
-  plotWavelet(rck,st,"ricker")
+  plotWavelet(rck,stp,"ricker")
 
 #############################################################################
 # plotting
@@ -79,9 +80,9 @@ def plotVel(v,sx,sz,cmin=0,cmax=0,png=None):
   if pngDir and png:
     pf.paintToPng(360,3.3,pngDir+png+".png")
 
-def plotWavelet(w,st,png=None):
+def plotWavelet(w,stp,png=None):
   sp = SimplePlot()
-  pv = sp.addPoints(st,w)
+  pv = sp.addPoints(stp,w)
   sp.setHLabel("Time (s)")
   sp.setVLabel("Pressure (Pascal)")
   sp.setFontSizeForPrint(12,504)
