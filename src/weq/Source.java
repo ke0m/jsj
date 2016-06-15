@@ -23,9 +23,10 @@ public class Source {
 	 * @param src the sampling of the source wavelet
 	 */
 	public Source(Sampling src){
-		_ntsrc = src.getCount();
-		_ftsrc = src.getFirst();
+		_ntsrc = src.getCount(); 
 		_dtsrc = src.getDelta();
+		_ftsrc = src.getFirst();
+		 
 	}
 	
 	/**
@@ -33,24 +34,23 @@ public class Source {
 	 * @param f the peak frequency of the wavelet
 	 * @return the 1D wavelet
 	 */
-	public double[] ricker(double f) {
-		double[] ricker = new double[_ntsrc];
+	public float[] ricker(double f) {
+		float[] ricker = new float[_ntsrc];
 		
 		for(int it = 0; it < _ntsrc; ++it) {
 			double t = _ftsrc + it*_dtsrc;
-			double pift = (DBL_PI*DBL_PI)*(f*f)*(t*t);
+			float pift = (float)((DBL_PI*DBL_PI)*(f*f)*(t*t));
 			ricker[it] = (1 - 2 *pift)*(exp(-pift));
 		}
 		
 		return ricker;
 	}
 
-	
 	/////////////////////////////////////////////////////////////////////////////
 	// private
 	
-	private int _ntsrc;
-	double _ftsrc;
-	double _dtsrc;
+	private int    _ntsrc;
+	private double _dtsrc;
+	private double _ftsrc;
 	
 }
