@@ -27,6 +27,8 @@ from weq import *
 def main(args):
   goBuildVelModel()
   goBuildRickerSource()
+  #goZeroPadDPtest() TODO
+  goPadAndInterpSource()
   return
 
 def goBuildVelModel():
@@ -40,8 +42,8 @@ def goBuildVelModel():
   plotVel(vel,sx,sz,png='velconst')
 
 def goBuildRickerSource():
-  nt  = 1000
-  dt  = 0.004
+  nt  = 250
+  dt  = 0.0018
   ft  = -1.0
   f   = 30.0
   st  = Sampling(nt,dt,ft)  
@@ -49,6 +51,25 @@ def goBuildRickerSource():
   src = Source(st)
   rck = src.ricker(f)
   plotWavelet(rck,stp,"ricker")
+
+def goPadAndInterpSource():
+  nx,nz,nt          = 100,100,1000
+  dx,dz,dt          = 1.0,1.0,0.00045
+  fx,fz,ft          = 0.0,0.0,0.0
+  ftsrc,dtsrc ntsrc = -1.0,0.0018,250
+  fpek, fmax        = 30.0,100.0
+  xsrc,zsrc         = 50,0
+  sx                = Sampling(nx,dx,fx)
+  sz                = Sampling(nz,dz,fz)
+  st                = Sampling(nt,dt,ft)
+  stsrc             = Sampling(ntsrc,dtsrc,ftsrc)
+  vel               = zerofloat(nz,nx)
+  fill(1500.0,vel)
+  wfd  = AcstcWfldFD(sx,sz,st,vel,fmax)
+  src  = Source(stsrc)
+  rck  = src.ricker(fpek)
+  psrc = zerofloat(nx,nz,nt)
+  src.zeroPadSrc(rck,psrc,xsrc,zsrc)
 
 #############################################################################
 # plotting
