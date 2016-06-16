@@ -27,8 +27,8 @@ from weq import *
 def main(args):
   goBuildVelModel()
   goBuildRickerSource()
-  #goZeroPadDPtest() TODO
-  goPadAndInterpSource()
+  goZeroPadDPtest()
+  #goPadAndInterpSource()
   return
 
 def goBuildVelModel():
@@ -44,7 +44,7 @@ def goBuildVelModel():
 def goBuildRickerSource():
   nt  = 250
   dt  = 0.0018
-  ft  = -1.0
+  ft  = -0.3
   f   = 30.0
   st  = Sampling(nt,dt,ft)  
   stp = Sampling(nt,dt,0.0) # Always plot from t=0
@@ -56,7 +56,7 @@ def goPadAndInterpSource():
   nx,nz,nt          = 100,100,1000
   dx,dz,dt          = 1.0,1.0,0.00045
   fx,fz,ft          = 0.0,0.0,0.0
-  ftsrc,dtsrc ntsrc = -1.0,0.0018,250
+  ftsrc,dtsrc,ntsrc = -1.0,0.0018,250
   fpek, fmax        = 30.0,100.0
   xsrc,zsrc         = 50,0
   sx                = Sampling(nx,dx,fx)
@@ -69,7 +69,39 @@ def goPadAndInterpSource():
   src  = Source(stsrc)
   rck  = src.ricker(fpek)
   psrc = zerofloat(nx,nz,nt)
-  src.zeroPadSrc(rck,psrc,xsrc,zsrc)
+
+def goZeroPadDPtest():
+  nx,nz       = 100,100
+  fts,dts,nts = -1.0,0.0018,250
+  xs,zs       = 50,0
+  ss          = Sampling(nts,dts,fts)
+  zp          = ZeroPad(ss,xs,zs)
+  m           = makeRandomImage1(nts)
+  d           = makeRandomImage3(nx,nz,nts)
+  ds          = zerofloat(nx,nz,nts)
+  ms          = zerofloat(nts)
+  zp.forward(m,ds)
+  zp.adjoint(d,ms)
+  print "m'm: ",dot(m,ms)
+  print "d'd: ",dot(d,ds)
+
+def makeRandomImage1(n1):
+  rand = Random(314159)
+  r = sub(randfloat(rand,n1),0.5)
+  return r
+
+def makeRandomImage2(n1,n2):
+  rand = Random(314159)
+  r = sub(randfloat(rand,n1,n2),0.5)
+  return r
+
+def makeRandomImage3(n1,n2,n3):
+  rand = Random(314159)
+  r = sub(randfloat(rand,n1,n2,n3),0.5)
+  return r
+
+def dot(x,y):
+  return sum(mul(x,y))
 
 #############################################################################
 # plotting
