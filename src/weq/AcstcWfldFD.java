@@ -68,15 +68,7 @@ public class AcstcWfldFD {
 		boolean stable = false;
 		float chk    = 0.f;
 		
-		if(_dx > _dz) {
-			chk = (float)(_dt*vmax/_dz);
-		}
-		else if(_dx < _dz) {
-			chk = (float)(_dt*vmax/_dx);
-		}
-		else {
-			chk = (float)(_dt*vmax/_dx);
-		}
+		chk = (float)(_dt*vmax/(min(_dx,_dz)));
 		
 		if(chk < CFL) {
 			stable = true;
@@ -100,13 +92,7 @@ public class AcstcWfldFD {
 		float vmin   = min(v);;
 		float ppl    = 0.f;
 		
-		if(_dx > _dz) {
-			ppl = (float)(vmin/fmax*_dx);
-		} else if(_dx < _dz){
-			ppl = (float)(vmin/fmax*_dz);
-		} else {
-			ppl = (float)(vmin/fmax*_dx);
-		}
+		ppl = (float)(vmin/(fmax*max(_dx,_dz)));
 		
 		if(ppl < T2S4) {
 			ppl = 0.f;
