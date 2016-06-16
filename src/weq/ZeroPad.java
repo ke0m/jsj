@@ -1,11 +1,5 @@
 package weq;
 
-import edu.mines.jtk.awt.*;
-import edu.mines.jtk.dsp.*;
-import edu.mines.jtk.mosaic.*;
-import edu.mines.jtk.util.*;
-import static edu.mines.jtk.util.ArrayMath.*;
-
 /** 
  * Zero pad operator for creating input for wave propagation
  * 
@@ -22,23 +16,33 @@ public class ZeroPad {
 	 * Constructs a zero pad operator
 	 * for padding the input source wavelet
 	 * before as input to a FD propagator
-	 * @param ssrc the sampling of the source wavelet
 	 * @param xloc x location of the source wavelet
 	 * @param zloc z location of the source wavelet
 	 */
-	public ZeroPad(Sampling ssrc, int xloc, int zloc) {
+	public ZeroPad(int xloc, int zloc) {
 		_xloc = xloc; _zloc = zloc;
-		_ntsrc = ssrc.getCount();
 	}
 	
+	/**
+	 * Applies the forward of the zero pad operator
+	 * @param src the input source wavelet (model)
+	 * @param psrc the output padded source wavelet (data)
+	 */
 	public void forward(float[] src, float[][][] psrc) {
-		for(int it = 0; it < _ntsrc; ++it) {
+		int ntsrc = src.length;
+		for(int it = 0; it < ntsrc; ++it) {
 			psrc[it][_zloc][_xloc] += src[it];
 		}
 	}
 
+	/**
+	 * Applies the adjoint of the zero pad operator
+	 * @param psrc the input padded source wavelet (data)
+	 * @param src the output 1D source wavelet (model)
+	 */
 	public void adjoint(float[][][] psrc, float[] src) {
-		for (int it = 0; it < _ntsrc; ++it){
+		int ntsrc = src.length;
+		for (int it = 0; it < ntsrc; ++it){
 			src[it] = psrc[it][_zloc][_xloc];
 		}
 	}
@@ -46,6 +50,5 @@ public class ZeroPad {
 	//////////////////////////////////////////////////////////
 	// private
 	
-	private int _xloc, _zloc, _ntsrc;
-	
+	private int _xloc, _zloc;
 }
