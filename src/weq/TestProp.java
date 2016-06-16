@@ -1,6 +1,7 @@
 package weq;
 
 import edu.mines.jtk.dsp.*;
+import edu.mines.jtk.mosaic.SimplePlot;
 import weq.AcstcWfldFD.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
@@ -15,7 +16,7 @@ public class TestProp {
 		double dx = 1.0;
 		double dz = 1.0;
 		double dt = 0.00045;
-		double dtsrc = 0.004;
+		double dtsrc = 0.008;
 		double fx = 0.0;
 		double fz = 0.0;
 		double ft = 0.0;
@@ -41,10 +42,10 @@ public class TestProp {
 		rck = src.ricker(f);
 		
 		float[][][] psrc = new float[nx][nz][nt];
-		
+
 		//psrc = zerofloat(nx,nz,nt);
 		
-		src.zeroPadSrc(rck, psrc, 50, 0);
+		//src.zeroPadSrc(rck, psrc, 50, 0);
 		System.out.println("Complete");
 		
 		//test = wf.rickerSource(st,f);
