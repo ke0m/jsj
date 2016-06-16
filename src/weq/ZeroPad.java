@@ -6,6 +6,16 @@ import edu.mines.jtk.mosaic.*;
 import edu.mines.jtk.util.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
+/** 
+ * Zero pad operator for creating input for wave propagation
+ * 
+ * @author Joseph Jennings, Stanford University
+ * @acknowledgement Guillaume Barnier; Ali Almomin, Stanford University
+ *                   Simon Luo; Dave Hale, Colorado School of Mines
+ *                   
+ * @version 2016.06.14
+ */
+
 public class ZeroPad {
 	
 	/**
