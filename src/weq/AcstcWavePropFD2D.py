@@ -27,8 +27,6 @@ from weq import *
 def main(args):
   goBuildVelModel()
   goBuildRickerSource()
-  goZeroPadDPtest()
-  goSourceScaleDPtest()
   #goPadAndInterpSource()
   return
 
@@ -70,55 +68,6 @@ def goPadAndInterpSource():
   src  = Source(stsrc)
   rck  = src.ricker(fpek)
   psrc = zerofloat(nx,nz,nt)
-
-def goZeroPadDPtest():
-  nx,nz = 100,100
-  nts   = 250
-  xs,zs = 50,0
-  zp    = ZeroPad(xs,zs)
-  m     = makeRandomImage1(nts,1992)
-  d     = makeRandomImage3(nx,nz,nts,1990)
-  ds    = zerofloat(nx,nz,nts)
-  ms    = zerofloat(nts)
-  zp.forward(m,ds)
-  zp.adjoint(d,ms)
-  print "m'm: ",dot(m,ms)
-  print "d'd: ",dot(d,ds)
-
-def goSourceScaleDPtest():
-  nx,nz,nt          = 10,10,10
-  dx,dz,dt          = 1.0,1.0,1.0
-  fx,fz,ft          = 0.0,0.0,0.0
-  nts   = 250
-  vel   = zerofloat(nx,nz)
-  fill(1500.0,vel)
-  ssc   = SourceScale(dt,vel)
-  m     = makeRandomImage3(nx,nz,nts,1992)
-  d     = makeRandomImage3(nx,nz,nts,1990)
-  ds    = zerofloat(nx,nz,nts)
-  ms    = zerofloat(nx,nz,nts)
-  ssc.forward(m,ds)
-  ssc.adjoint(d,ms)
-  print "m'm: ",dot(m,ms)
-  print "d'd: ",dot(d,ds)
-
-def makeRandomImage1(n1,s):
-  rand = Random(s)
-  r = sub(randfloat(rand,n1),0.5)
-  return r
-
-def makeRandomImage2(n1,n2,s):
-  rand = Random(s)
-  r = sub(randfloat(rand,n1,n2),0.5)
-  return r
-
-def makeRandomImage3(n1,n2,n3,s):
-  rand = Random(s)
-  r = sub(randfloat(rand,n1,n2,n3),0.5)
-  return r
-
-def dot(x,y):
-  return sum(mul(x,y))
 
 #############################################################################
 # plotting
