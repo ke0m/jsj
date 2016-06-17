@@ -58,18 +58,32 @@ def goPadAndInterpSource():
   ftsrc,dtsrc,ntsrc = -0.3,0.0018,250
   fpek              = 30.0
   xsrc,zsrc         = 50,0
-  st                = Sampling(nt,dt,ft)
+  st                = Sampling(nt,dt,ftsrc)
   stsrc             = Sampling(ntsrc,dtsrc,ftsrc)
   stp               = Sampling(ntsrc,dtsrc,0.0) # Always plot from t=0
+  istp              = Sampling(nt,dt,0.0) # Always plot from t=0
   src               = Source(stsrc)
   rck               = src.ricker(fpek)
   psrc              = zerofloat(nx,nz,ntsrc)
+  spsrc             = zerofloat(nx,nz,ntsrc)
+  ispsrc            = zerofloat(nx,nz,nt)
   bak               = zerofloat(ntsrc)
+  sbak              = zerofloat(ntsrc)
+  isbak             = zerofloat(nt)
   zp                = ZeroPad(xsrc,zsrc);
   zp.forward(rck,psrc)
-  sf3 = SimpleFloat3(psrc)
-  sf3.get3(ntsrc,50,0,0,bak)
-  plotWavelet(bak,stp,"ricker")
+  vel = zerofloat(nx,nz)
+  fill(1500.0,vel)
+  ss = SourceScale(dt,vel)
+  ss.forward(psrc,spsrc);
+  sf3 = SimpleFloat3(spsrc)
+  sf3.get3(ntsrc,50,0,0,sbak)
+  plotWavelet(sbak,stp,"ricker")
+  si = SourceInterp(stsrc,st)
+  si.forward(spsrc,ispsrc)
+  sf3i = SimpleFloat3(ispsrc)
+  sf3i.get3(nt,50,0,0,isbak)
+  plotWavelet(isbak,istp,"ricker")
 
 #############################################################################
 # plotting
@@ -103,7 +117,8 @@ def plotVel(v,sx,sz,cmin=0,cmax=0,png=None):
 
 def plotWavelet(w,stp,png=None):
   sp = SimplePlot()
-  pv = sp.addPoints(stp,w)
+  #pv = sp.addPoints(stp,w)
+  pv = sp.addSequence(stp,w)
   sp.setHLabel("Time (s)")
   sp.setVLabel("Pressure (Pascal)")
   sp.setFontSizeForPrint(12,504)
