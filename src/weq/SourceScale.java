@@ -33,7 +33,7 @@ public class SourceScale {
 				for(int ix = 0; ix < nx; ++ix){
 					float v2  = _vel[iz][ix]*_vel[iz][ix];
 					float dt2 = _dtwf*_dtwf;
-					spsrc[it][iz][ix] += -v2*dt2*psrc[it][ix][iz];
+					spsrc[it][iz][ix] += -v2*dt2*psrc[it][iz][ix];
 				}
 			}
 		}
@@ -48,7 +48,7 @@ public class SourceScale {
 				for(int ix = 0; ix < nx; ++ix){
 					float v2  = _vel[iz][ix]*_vel[iz][ix];
 					float dt2 = _dtwf*_dtwf;
-					psrc[it][iz][ix] += -v2*dt2*spsrc[it][ix][iz];
+					psrc[it][iz][ix] += -v2*dt2*spsrc[it][iz][ix];
 				}
 			}
 		}
