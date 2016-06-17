@@ -43,7 +43,7 @@ public class ZeroPad {
 	public void adjoint(float[][][] psrc, float[] src) {
 		int ntsrc = src.length;
 		for (int it = 0; it < ntsrc; ++it){
-			src[it] = psrc[it][_zloc][_xloc];
+			src[it] += psrc[it][_zloc][_xloc];
 		}
 	}
 	
