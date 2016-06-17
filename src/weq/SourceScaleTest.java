@@ -7,6 +7,13 @@ import static edu.mines.jtk.util.ArrayMath.*;
 
 import java.util.Random;
 
+/**
+ * Tests {@link weq.SourceScale}.
+ * @author Joseph Jennings, Stanford University
+ * @acknowledgement Dave Hale, Colorado School of Mines
+ * @version 2016.06.16
+ */
+
 public class SourceScaleTest extends TestCase{
   public static void main(String[] args) {
     TestSuite suite = new TestSuite(SourceScaleTest.class);

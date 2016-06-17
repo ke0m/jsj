@@ -4,6 +4,12 @@ import static edu.mines.jtk.util.ArrayMath.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests {@link weq.ZeroPad}.
+ * @author Joseph Jennings, Stanford University
+ * @acknowledgement Dave Hale, Colorado School of Mines
+ * @version 2016.06.16
+ */
 public class ZeroPadTest extends TestCase {
 
   public void testDp() {
