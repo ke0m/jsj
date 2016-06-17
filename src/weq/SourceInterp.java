@@ -1,7 +1,7 @@
 package weq;
 
 import edu.mines.jtk.dsp.*;
-import edu.mines.jtk.util.SimpleFloat3;
+import edu.mines.jtk.util.*;
 
 import static edu.mines.jtk.util.ArrayMath.*;
 
@@ -34,6 +34,8 @@ public class SourceInterp {
    * @param sinp output interpolated source
    */
   public void forward(float[][][] psrc, float[][][] sinp) {
+    Check.argument(sinp.length == _ntf, "Output array length does not match sampling length.");
+    Check.argument(psrc.length == _nts, "Input array length does not match sampling length.");
     SimpleFloat3 sc3 = new SimpleFloat3(psrc);
     SimpleFloat3 sf3 = new SimpleFloat3(sinp);
     float[] crs = zerofloat(_nts);
@@ -44,9 +46,9 @@ public class SourceInterp {
     li.setUniform(_nts, _dts, _fts, crs);
     for(int iz = 0; iz < nz; ++iz) {
       for(int ix = 0; ix < nx; ++ix){
-        sc3.get1(_nts, ix, iz, 0, crs);
-        li.interpolate(_ntf, _dtf, _dtf, fin);
-        sf3.set1(_ntf, ix, iz, 0, fin);
+        sc3.get3(_nts, ix, iz, 0, crs);
+        li.interpolate(_ntf, _dtf, _ftf, fin);
+        sf3.set3(_ntf, ix, iz, 0, fin);
       }
     }
   }
