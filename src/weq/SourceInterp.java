@@ -61,6 +61,8 @@ public class SourceInterp {
    * @param psrc the output of the adjoint interpolator
    */
   public void adjoint(float[][][] sinp, float[][][] psrc){
+    Check.argument(sinp.length == _ntf, "Output array length does not match sampling length.");
+    Check.argument(psrc.length == _nts, "Input array length does not match sampling length.");
     SimpleFloat3 sc3 = new SimpleFloat3(psrc);
     SimpleFloat3 sf3 = new SimpleFloat3(sinp);
     float[] crs = zerofloat(_nts);
@@ -72,6 +74,7 @@ public class SourceInterp {
     for(int iz=0; iz<nz; ++iz){
       for(int ix=0; ix<nx; ++ix) {
         sf3.get3(_ntf,ix,iz,0,fin);
+        fill(0.f,crs);
         li.adjInterpSimp(_ntf,_dtf,_ftf,crs);
         sc3.set3(_nts,ix,iz,0,crs);
       }
