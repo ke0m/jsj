@@ -47,7 +47,7 @@ public class SourceInterp {
     for(int iz = 0; iz < nz; ++iz) {
       for(int ix = 0; ix < nx; ++ix){
         sc3.get3(_nts, ix, iz, 0, crs);
-        li.interpolate(_ntf, _dtf, _ftf, fin);
+        li.interpSimp(_ntf, _dtf, _ftf, fin);
         sf3.set3(_ntf, ix, iz, 0, fin);
       }
     }
