@@ -44,11 +44,11 @@ public class SourceInterp {
     int nz    = psrc[0].length;
     LinearInterpolator li = new LinearInterpolator();
     li.setUniform(_nts, _dts, _fts, crs);
-    for(int iz = 0; iz < nz; ++iz) {
-      for(int ix = 0; ix < nx; ++ix){
-        sc3.get3(_nts, ix, iz, 0, crs);
-        li.interpSimp(_ntf, _dtf, _ftf, fin);
-        sf3.set3(_ntf, ix, iz, 0, fin);
+    for(int iz=0; iz<nz; ++iz) {
+      for(int ix=0; ix<nx; ++ix){
+        sc3.get3(_nts,ix,iz,0,crs);
+        li.interpSimp(_ntf,_dtf,_ftf,fin);
+        sf3.set3(_ntf,ix,iz,0,fin);
       }
     }
   }
@@ -61,7 +61,21 @@ public class SourceInterp {
    * @param psrc the output of the adjoint interpolator
    */
   public void adjoint(float[][][] sinp, float[][][] psrc){
-    
+    SimpleFloat3 sc3 = new SimpleFloat3(psrc);
+    SimpleFloat3 sf3 = new SimpleFloat3(sinp);
+    float[] crs = zerofloat(_nts);
+    float[] fin = zerofloat(_ntf);
+    int nx    = psrc[0][0].length;
+    int nz    = psrc[0].length;
+    LinearInterpolator li = new LinearInterpolator();
+    li.setUniform(_nts, _dts, _fts, fin);
+    for(int iz=0; iz<nz; ++iz){
+      for(int ix=0; ix<nx; ++ix) {
+        sf3.get3(_ntf,ix,iz,0,fin);
+        li.adjInterpSimp(_ntf,_dtf,_ftf,crs);
+        sc3.set3(_nts,ix,iz,0,crs);
+      }
+    }
   }
   
   /////////////////////////////////////////////////
