@@ -66,10 +66,12 @@ def goPadAndInterpSource():
   rck               = src.ricker(fpek)
   psrc              = zerofloat(nx,nz,ntsrc)
   spsrc             = zerofloat(nx,nz,ntsrc)
+  aspsrc            = zerofloat(nx,nz,ntsrc)
   ispsrc            = zerofloat(nx,nz,nt)
   bak               = zerofloat(ntsrc)
   sbak              = zerofloat(ntsrc)
   isbak             = zerofloat(nt)
+  abak              = zerofloat(ntsrc)
   zp                = ZeroPad(xsrc,zsrc);
   zp.forward(rck,psrc)
   vel = zerofloat(nx,nz)
@@ -81,9 +83,10 @@ def goPadAndInterpSource():
   plotWavelet(sbak,stp,"ricker")
   si = SourceInterp(stsrc,st)
   si.forward(spsrc,ispsrc)
-  sf3i = SimpleFloat3(ispsrc)
-  sf3i.get3(nt,50,0,0,isbak)
-  plotWavelet(isbak,istp,"ricker")
+  si.adjoint(ispsrc,aspsrc)
+  sf3a = SimpleFloat3(aspsrc)
+  sf3a.get3(ntsrc,50,0,0,abak)
+  plotWavelet(abak,stp,"ricker")
 
 #############################################################################
 # plotting
