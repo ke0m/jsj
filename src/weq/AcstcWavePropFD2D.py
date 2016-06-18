@@ -63,6 +63,7 @@ def goPadAndInterpSource():
   stp               = Sampling(ntsrc,dtsrc,0.0) # Always plot from t=0
   istp              = Sampling(nt,dt,0.0) # Always plot from t=0
   src               = Source(stsrc)
+  # Computes the ricker wavelet
   rck               = src.ricker(fpek)
   psrc              = zerofloat(nx,nz,ntsrc)
   spsrc             = zerofloat(nx,nz,ntsrc)
@@ -73,20 +74,25 @@ def goPadAndInterpSource():
   isbak             = zerofloat(nt)
   abak              = zerofloat(ntsrc)
   zp                = ZeroPad(xsrc,zsrc);
+  # Zero padding the source
   zp.forward(rck,psrc)
   vel = zerofloat(nx,nz)
   fill(1500.0,vel)
   ss = SourceScale(dt,vel)
+  # Scales the source wavelet
   ss.forward(psrc,spsrc);
   sf3 = SimpleFloat3(spsrc)
   sf3.get3(ntsrc,50,0,0,sbak)
   plotWavelet(sbak,stp,"ricker")
+  # Interpolates the source wavelet
   si = SourceInterp(stsrc,st)
   si.forward(spsrc,ispsrc)
+  # Applies the adjoint of the interpolated wavelet
   si.adjoint(ispsrc,aspsrc)
   sf3a = SimpleFloat3(aspsrc)
   sf3a.get3(ntsrc,50,0,0,abak)
   plotWavelet(abak,stp,"ricker")
+
 
 #############################################################################
 # plotting
