@@ -26,7 +26,6 @@ public class AcstcWfldFD {
 	public AcstcWfldFD(Sampling sx, Sampling sz, Sampling st, float[][] v, float fmax) {
 		_nx = sx.getCount(); _nz = sz.getCount(); _nt = st.getCount();
 		_dx = sx.getDelta(); _dz = sz.getDelta(); _dt = st.getDelta();
-		_fx = sx.getFirst(); _fz = sz.getFirst(); _ft = st.getFirst();
 		
 		Check.state(checkCFL(v), "Error: please change your samplings. Your propagator will be unstable");
 
@@ -34,25 +33,36 @@ public class AcstcWfldFD {
 			boolean disp = false;
 			Check.state(disp, "Error: please change your samplings. Your propagation will be dispersive.");
 		}
+		
+		_v = v;
 	}
 	
 	public void forward(float[][][] src, float[][][] wfld) {
-		//TODO: First need a stencil
-		
+	  //TODO: Initial conditions
+	  float[][] lap = zerofloat(_nz,_nx);
+	  for(int it=2; it<_nt; ++it){
+	    for(int ix=0; ix<_nx; ++ix){
+	      for(int iz=0; iz<_nz; ++iz){
+	        float v2d2 = (_v[iz][ix]*_v[iz][ix])*(float)(_dt*_dt);
+	        forward4Stencil(wfld[it],lap); //FIXME: need to get a slice of wlfd
+	        wfld[it][iz][ix] = src[it][iz][ix]+ v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix]-wfld[it-2][iz][ix];
+	      }
+	    }
+	  }
 	}
 	
 	public void adjoint(float[][][] wfld, float[][][] src) {
 	}
 	
-	
 	///////////////////////////////////////////////////////////////////////
 	// private
 	private int _nx, _nz, _nt;
 	private double _dx, _dz, _dt;
-	private double _fx, _fz, _ft;
 	
-	private static final double CFL = sqrt(2)/2;
-	private static final int T2S4 = 4;
+	private static final double _CFL = sqrt(2)/2;
+	private static final int _T2S4 = 4;
+	
+	private float[][] _v;
 	
 	/**
 	 * Checks the stability of the 2D acoustic propagator based on the 
@@ -68,7 +78,7 @@ public class AcstcWfldFD {
 		
 		chk = (float)(_dt*vmax/(min(_dx,_dz)));
 		
-		if(chk < CFL) {
+		if(chk < _CFL) {
 			stable = true;
 		}
 		
@@ -85,24 +95,54 @@ public class AcstcWfldFD {
 	 *         number of gridpoints per wavelength. Else,
 	 *         returns 0.
 	 */
-	public float checkPtsPerLength(float[][] v, float fmax) {
+	private float checkPtsPerLength(float[][] v, float fmax) {
 		
-		float vmin   = min(v);;
-		float ppl    = 0.f;
+		float vmin = min(v);;
+		float ppl  = 0.f;
 		
 		ppl = (float)(vmin/(fmax*max(_dx,_dz)));
 		
-		if(ppl < T2S4) {
+		if(ppl < _T2S4) {
 			ppl = 0.f;
 		}
-		
 		return ppl;
 	}
 	
-	///////////////////////////////////////////////////////////////////////
-	// private
-
-	//private float[][] applyStencil4() {
-	//}
+	/**
+	 * The forward fourth order differencing stencil (laplacian)
+	 * @param wfld the input wavefield
+	 * @param lap the differentiated wavefield
+	 */
+	private void forward4Stencil(float[][] wfld, float[][] lap) {
+	  float a2=-0.08333f; float a1=1.33333f; float a0=-2.50000f;
+	  float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
+	  for(int ix=2; ix<_nx-2; ++ix){
+	    for(int iz=2; iz<_nz-2; ++iz){
+	      lap[iz][ix] = a0* wfld[iz  ][ix  ] * (idx2 + idz2)   +
+	                    a1*(wfld[iz  ][ix+1] + wfld[iz  ][ix-1])*idx2 +
+	                    a2*(wfld[iz  ][ix+2] + wfld[iz  ][ix-2])*idx2 +
+	                    a1*(wfld[iz+1][ix  ] + wfld[iz-1][ix  ])*idz2 +
+	                    a2*(wfld[iz+2][ix  ] + wfld[iz-2][ix  ])*idz2;
+	    }
+	  }
+	}
 	
+	/**
+	 * The adjoint fourth order differencing stencil (also laplacian)
+	 * @param lap the input differentiated wavefield
+	 * @param wfld the output wavefield
+	 */
+	private void adjoint4Stencil(float[][] lap, float[][] wfld) {
+	   float a2=-0.08333f; float a1=1.33333f; float a0=-2.50000f;
+	    float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
+	    for(int ix=2; ix<_nx-2; ++ix){
+	      for(int iz=2; iz<_nz-2; ++iz){
+	        wfld[iz][ix] = a0* lap[iz  ][ix  ] * (idx2 + idz2)   +
+	                       a1*(lap[iz  ][ix+1] + lap[iz  ][ix-1])*idx2 +
+	                       a2*(lap[iz  ][ix+2] + lap[iz  ][ix-2])*idx2 +
+	                       a1*(lap[iz+1][ix  ] + lap[iz-1][ix  ])*idz2 +
+	                       a2*(lap[iz+2][ix  ] + lap[iz-2][ix  ])*idz2;
+	      }
+	    }
+	}
 }
