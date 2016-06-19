@@ -25,9 +25,10 @@ from edu.mines.jtk.util.ArrayMath import *
 from weq import *
 
 def main(args):
-  goBuildVelModel()
+  #goBuildVelModel()
   #goBuildRickerSource()
   goPadAndInterpSource()
+  goGetTSlice()
   return
 
 def goBuildVelModel():
@@ -94,7 +95,26 @@ def goPadAndInterpSource():
   plotWavelet(abak,stp,"ricker")
 
 def goGetTSlice():
-
+  nx,nz             = 100,100
+  ftsrc,dtsrc,ntsrc = -0.3,0.0018,250
+  fpek              = 30.0
+  xsrc,zsrc         = 50,0
+  stsrc             = Sampling(ntsrc,dtsrc,ftsrc)
+  stp               = Sampling(ntsrc,dtsrc,0.0) # Always plot from t=0
+  src               = Source(stsrc)
+  # Computes the ricker wavelet
+  rck               = src.ricker(fpek)
+  plotWavelet(rck,stp,"ricker")
+  psrc              = zerofloat(nx,nz,ntsrc)
+  zp                = ZeroPad(xsrc,zsrc);
+  # Zero padding the source
+  zp.forward(rck,psrc)
+  sf3 = SimpleFloat3(psrc)
+  psrc[0][0][0] = 2.0
+  slc = zerofloat(nx,nz)
+  #sf3.get12(nx,nz,0,0,167,slc)
+  sf3.get12(nx,nz,0,0,0,slc)
+  print slc
 
 #############################################################################
 # plotting
