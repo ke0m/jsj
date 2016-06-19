@@ -93,6 +93,8 @@ def goPadAndInterpSource():
   sf3a.get3(ntsrc,50,0,0,abak)
   plotWavelet(abak,stp,"ricker")
 
+def goGetTSlice():
+
 
 #############################################################################
 # plotting
