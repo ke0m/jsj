@@ -42,7 +42,6 @@ public class Source {
 			float pift = (float)((DBL_PI*DBL_PI)*(f*f)*(t*t));
 			ricker[it] = (1 - 2 *pift)*(exp(-pift));
 		}
-		
 		return ricker;
 	}
 
