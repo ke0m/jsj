@@ -39,12 +39,15 @@ public class AcstcWfldFD {
 	
 	public void forward(float[][][] src, float[][][] wfld) {
 	  //TODO: Initial conditions
+	  SimpleFloat3 wf3 = new SimpleFloat3(wfld);
+	  float[][] slc = zerofloat(_nz,_nx);
 	  float[][] lap = zerofloat(_nz,_nx);
 	  for(int it=2; it<_nt; ++it){
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
 	        float v2d2 = (_v[iz][ix]*_v[iz][ix])*(float)(_dt*_dt);
-	        forward4Stencil(wfld[it],lap); //FIXME: need to get a slice of wlfd
+	        wf3.get12(_nx, _nz, 0, 0, it, slc);
+	        forward4Stencil(slc,lap);
 	        wfld[it][iz][ix] = src[it][iz][ix]+ v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix]-wfld[it-2][iz][ix];
 	      }
 	    }
