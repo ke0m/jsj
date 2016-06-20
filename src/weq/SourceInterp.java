@@ -15,6 +15,8 @@ import static edu.mines.jtk.util.ArrayMath.*;
  */
 public class SourceInterp {
   
+  //TODO: Change to a normalized interpolation
+  
   /**
    * Constructs a SourceInterp operator
    * @param ss temporal sampling of source wavelet
