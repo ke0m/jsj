@@ -27,7 +27,7 @@ public class AcstcWfldFD {
 		_nx = sx.getCount(); _nz = sz.getCount(); _nt = st.getCount();
 		_dx = sx.getDelta(); _dz = sz.getDelta(); _dt = st.getDelta();
 		
-		Check.state(checkCFL(v), "Error: please change your samplings. Your propagator will be unstable");
+		Check.state(checkCFL(v), "Error: please change your samplings. Your propagation will be unstable");
 
 		if(checkPtsPerLength(v,fmax) == 0.f) {
 			boolean disp = false;
@@ -37,23 +37,35 @@ public class AcstcWfldFD {
 		_v = v;
 	}
 	
+	/**
+	 * Forward acoustic wave propagation without bondary conditions
+	 * @param src the source wavelet, padded and interpolated
+	 * @param wfld the wavefield
+	 */
 	public void forward(float[][][] src, float[][][] wfld) {
-	  //TODO: Initial conditions
+	  SimpleFloat3 sr3 = new SimpleFloat3(src);
 	  SimpleFloat3 wf3 = new SimpleFloat3(wfld);
 	  float[][] slc = zerofloat(_nz,_nx);
 	  float[][] lap = zerofloat(_nz,_nx);
+	  sr3.get12(_nx, _nz, 0, 0, 0, slc);
+	  wf3.set12(_nx, _nz, 0, 0, 1, slc);
 	  for(int it=2; it<_nt; ++it){
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
 	        float v2d2 = (_v[iz][ix]*_v[iz][ix])*(float)(_dt*_dt);
 	        wf3.get12(_nx, _nz, 0, 0, it, slc);
 	        forward4Stencil(slc,lap);
-	        wfld[it][iz][ix] = src[it][iz][ix]+ v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix]-wfld[it-2][iz][ix];
+	        wfld[it][iz][ix] = src[it-1][iz][ix] + v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix] - wfld[it-2][iz][ix];
 	      }
 	    }
 	  }
 	}
 	
+	/**
+	 * Adjoint acoustic wave propagation without boundary conditions
+	 * @param wfld the wavfield
+	 * @param src the source wavelet
+	 */
 	public void adjoint(float[][][] wfld, float[][][] src) {
 	}
 	
