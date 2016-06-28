@@ -13,17 +13,22 @@ package weq;
 
 public class SourceScale {
 	
-	/**
-	 * Constructs a SourceScale operator to scale the zero padded
-	 * source before interpolation
-	 * @param dtwf the temporal sampling of the wavefield
-	 * @param vel the input velocity
-	 */
+  /**
+   * Constructs a SourceScale operator to scale the zero padded
+   * source before interpolation
+   * @param dtwf the temporal sampling of the wavefield
+   * @param vel the input velocity
+   */
   public SourceScale(double dtwf, float[][] vel) {
 	  _dtwf = (float)dtwf;
 	  _vel = vel;
 	}
 	
+  /**
+   * Applies the forward of the source scaling operator
+   * @param psrc padded source wavelet
+   * @param spsrc scaled padded source wavelet
+   */
 	public void forward(float[][][] psrc, float spsrc[][][]) {
 	  int nx    = psrc[0][0].length;
 	  int nz    = psrc[0].length;
@@ -39,6 +44,11 @@ public class SourceScale {
 	  }
 	}
 	
+	/**
+	 * Applies tha adjoint of the source scaling operator
+	 * @param spsrc scaled padded source wavelet
+	 * @param psrc padded source wavelet
+	 */
 	public void adjoint(float[][][] spsrc, float psrc[][][]) {
 	  int nx    = psrc[0][0].length;
 	  int nz    = psrc[0].length;
