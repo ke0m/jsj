@@ -14,6 +14,9 @@ import static edu.mines.jtk.util.ArrayMath.*;
  * @version 2016.06.11 
  */
 
+//TODO: Pass a coeffiecient operator that allows for easy exchange of
+//      boundary conditions
+
 public class AcstcWfldFD {
 	
 	/**
@@ -38,7 +41,7 @@ public class AcstcWfldFD {
 	}
 	
 	/**
-	 * Forward acoustic wave propagation without bondary conditions
+	 * Forward acoustic wave propagation without boundary conditions
 	 * @param src the source wavelet, padded and interpolated
 	 * @param wfld the wavefield
 	 */
@@ -148,16 +151,16 @@ public class AcstcWfldFD {
 	 * @param wfld the output wavefield
 	 */
 	private void adjoint4Stencil(float[][] lap, float[][] wfld) {
-	   float a2=-0.08333f; float a1=1.33333f; float a0=-2.50000f;
-	    float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
-	    for(int ix=2; ix<_nx-2; ++ix){
-	      for(int iz=2; iz<_nz-2; ++iz){
-	        wfld[iz][ix] = a0* lap[iz  ][ix  ] * (idx2 + idz2)   +
-	                       a1*(lap[iz  ][ix+1] + lap[iz  ][ix-1])*idx2 +
-	                       a2*(lap[iz  ][ix+2] + lap[iz  ][ix-2])*idx2 +
-	                       a1*(lap[iz+1][ix  ] + lap[iz-1][ix  ])*idz2 +
-	                       a2*(lap[iz+2][ix  ] + lap[iz-2][ix  ])*idz2;
+	  float a2=-0.08333f; float a1=1.33333f; float a0=-2.50000f;
+	  float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
+	  for(int ix=2; ix<_nx-2; ++ix){
+	    for(int iz=2; iz<_nz-2; ++iz){
+	      wfld[iz][ix] = a0* lap[iz  ][ix  ] * (idx2 + idz2)   +
+	                     a1*(lap[iz  ][ix+1] + lap[iz  ][ix-1])*idx2 +
+	                     a2*(lap[iz  ][ix+2] + lap[iz  ][ix-2])*idx2 +
+	                     a1*(lap[iz+1][ix  ] + lap[iz-1][ix  ])*idz2 +
+	                     a2*(lap[iz+2][ix  ] + lap[iz-2][ix  ])*idz2;
 	      }
-	    }
+	   }
 	}
 }
