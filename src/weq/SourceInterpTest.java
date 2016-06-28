@@ -4,11 +4,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import edu.mines.jtk.dsp.*;
-import edu.mines.jtk.util.SimpleFloat3;
 
 import static edu.mines.jtk.util.ArrayMath.*;
-
-import java.util.Random;
 
 public class SourceInterpTest extends TestCase{
   public static void main(String[] args) {
