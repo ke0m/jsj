@@ -50,8 +50,8 @@ public class AcstcWfldFD {
 	  SimpleFloat3 wf3 = new SimpleFloat3(wfld);
 	  float[][] slc = zerofloat(_nz,_nx);
 	  float[][] lap = zerofloat(_nz,_nx);
-	  sr3.get12(_nx, _nz, 0, 0, 0, slc);
-	  wf3.set12(_nx, _nz, 0, 0, 1, slc);
+	  sr3.get12(_nx, _nz, 0, 0, 0, slc); // Initial
+	  wf3.set12(_nx, _nz, 0, 0, 1, slc); // condition
 	  for(int it=2; it<_nt; ++it){
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
