@@ -1,15 +1,31 @@
 package weq;
 
 import edu.mines.jtk.dsp.*;
+import edu.mines.jtk.io.*;
 import edu.mines.jtk.mosaic.SimplePlot;
 import weq.AcstcWfldFD.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteOrder;
+
 public class TestProp {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		
+	
+	  ArrayInputStream ais = new ArrayInputStream("/home/joe/phd/projects/weq/src/weq/bay.dat");
+	  
+	 float[][] x = zerofloat(1050,1600);
+	 
+	 ais.readFloats(x);
+	 
+	 SimplePlot sp = new SimplePlot();
+	 
+	 sp.asPixels(x);
+	  
+	  /*
 		int nx = 100;
 		int nz = 100;
 		int nt = 1000;
@@ -47,6 +63,7 @@ public class TestProp {
 		
 		//src.zeroPadSrc(rck, psrc, 50, 0);
 		System.out.println("Complete");
+		*/
 		
 		//test = wf.rickerSource(st,f);
 

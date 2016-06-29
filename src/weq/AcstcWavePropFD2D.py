@@ -8,6 +8,7 @@ Author: Joseph Jennings
 '''
 
 import os,sys
+from java.nio import *
 from java.awt import *
 from java.io import *
 from java.lang import *
@@ -27,8 +28,9 @@ from weq import *
 def main(args):
   #goBuildVelModel()
   #goBuildRickerSource()
-  goPadAndInterpSource()
-  goGetTSlice()
+  #goPadAndInterpSource()
+  #goGetTSlice()
+  goApplyStencil()
   return
 
 def goBuildVelModel():
@@ -116,6 +118,18 @@ def goGetTSlice():
   sf3.get12(nx,nz,0,0,0,slc)
   print slc
 
+def goApplyStencil():
+  b = readBayImage()
+  plotBay(b,png="bay")
+
+def readBayImage():
+  n1,n2 = 1050,1600
+  x = zerofloat(n1,n2)
+  ais = ArrayInputStream("/home/joe/phd/projects/weq/data/bay.dat")
+  ais.readFloats(x)
+  ais.close()
+  return x
+
 #############################################################################
 # plotting
 
@@ -157,6 +171,27 @@ def plotWavelet(w,stp,png=None):
   sp.setVisible(True)
   if pngDir:
     sp.paintToPng(300,7.0,pngDir+png+".png")
+
+def plotBay(b,cmin=0,cmax=0,png=None):
+  pp = PlotPanel(PlotPanel.Orientation.X1DOWN_X2RIGHT)
+  pp.setBackground(backgroundColor)
+  pp.setHLabel("East - West")
+  pp.setVLabel("North - South")
+  pv = pp.addPixels(b)
+  pv.setColorModel(ColorMap.GRAY)
+  pv.setInterpolation(PixelsView.Interpolation.LINEAR)
+  cb = pp.addColorBar()
+  cb.setWidthMinimum(100)
+  pf = PlotFrame(pp)
+  pf.setFontSizeForSlide(1.0,0.9)
+  pf.setSize(1000,700)
+  pf.setVisible(True)
+  if cmin<cmax:
+    pv.setClips(cmin,cmax)
+  else:
+    pv.setPercentiles(1,99)
+  if pngDir and png:
+    pf.paintToPng(360,3.3,pngDir+png+".png")
 
 #############################################################################
 # Do everything on Swing thread.
