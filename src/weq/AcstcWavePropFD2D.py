@@ -31,7 +31,6 @@ def main(args):
   #goPadAndInterpSource()
   #goGetTSlice()
   goApplyStencil()
-  return
 
 def goBuildVelModel():
   nx,nz = 100,100
@@ -90,7 +89,7 @@ def goPadAndInterpSource():
   # Interpolates the source wavelet
   si = SourceInterp(stsrc,st)
   si.forward(spsrc,ispsrc)
-  # Applies the adjoint of the interpolated wavelet
+  # Applies the adjoint to the interpolated wavelet
   si.adjoint(ispsrc,aspsrc)
   sf3a = SimpleFloat3(aspsrc)
   sf3a.get3(ntsrc,50,0,0,abak)
@@ -120,12 +119,17 @@ def goGetTSlice():
 
 def goApplyStencil():
   b,sz,sx = readBayImage()
+  nx = sx.getCount()
+  nz = sz.getCount()
+  lap = zerofloat(nx,nz)
   st = Sampling(10,0.5,1.0)
   plotBay(b,png="bay")
-  vel = zerofloat(sx.getCount(),sz.getCount())
+  vel = zerofloat(nx,nz)
   fill(1.0,vel)
-  f = 1.0
+  f = 0.25
   prp = AcstcWfldFD(sx,sz,st,vel,f)
+  prp.forward4Stencil(b,lap)
+  plotBay(lap,png="lap")
 
 def readBayImage():
   n1,n2 = 1600,1050
