@@ -119,16 +119,23 @@ def goGetTSlice():
   print slc
 
 def goApplyStencil():
-  b = readBayImage()
+  b,sz,sx = readBayImage()
+  st = Sampling(10,0.5,1.0)
   plotBay(b,png="bay")
+  vel = zerofloat(sx.getCount(),sz.getCount())
+  fill(1.0,vel)
+  f = 1.0
+  prp = AcstcWfldFD(sx,sz,st,vel,f)
 
 def readBayImage():
-  n1,n2 = 1050,1600
-  x = zerofloat(n1,n2)
+  n1,n2 = 1600,1050
+  s1 = Sampling(n1,1.0,0.0)
+  s2 = Sampling(n2,1.0,0.0)
+  x = zerofloat(n2,n1)
   ais = ArrayInputStream("/home/joe/phd/projects/weq/data/bay.dat")
   ais.readFloats(x)
   ais.close()
-  return x
+  return x,s1,s2
 
 #############################################################################
 # plotting
