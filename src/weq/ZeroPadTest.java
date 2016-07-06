@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  */
 public class ZeroPadTest extends TestCase {
 
-  public void testDp() {
+  public void testDpSrc() {
     int nx = 100; int nz = 100;
     int xs = 50; int zs = 0;
     int nts = 250;
@@ -28,7 +28,16 @@ public class ZeroPadTest extends TestCase {
     assertEquals(dotm,dotd,0.00001f);
   }
   
+  public void testDpImg() {
+    int nx = 100; int nz = 100;
+    int xs = 2; int zs = 2;
+    ZeroPad zp = new ZeroPad(xs,zs);
+  }
+  
   private static float dot(float[] x, float[] y) {
+    return sum(mul(x,y));
+  }
+  private static float dot(float[][] x, float[][] y) {
     return sum(mul(x,y));
   }
   private static float dot(float[][][] x, float[][][] y) {
