@@ -49,11 +49,14 @@ public class ZeroPad {
 	  int nxp = pimg[0].length; int nzp = pimg.length;
 	  if(nxp < nxi || nzp < nzi) {
 	    Check.state(false, "The input image must be smaller than the output");
+	  } if(nxi+_xloc > nxp || nzi+_zloc > nzp) {
+	    Check.state(false, "The input image will not be padded correctly."
+	        + "please increase padding or reduce xs and/or zs");
 	  }
 	  fill(0.f,pimg);
-	  for(int ix = _xloc; ix < nxi; ix++) {
-	    for(int iz = _zloc; iz < nzi; iz++) {
-	      pimg[iz][ix] = img[iz][ix];
+	  for(int ix = 0; ix < nxi; ix++) {
+	    for(int iz = 0; iz < nzi; iz++) {
+	      pimg[iz+_zloc][ix+_xloc] = img[iz][ix];
 	    }
 	  }
 	}
@@ -81,10 +84,13 @@ public class ZeroPad {
 	  int nxp = pimg[0].length; int nzp = pimg.length;
 	  if(nxp < nxi || nzp < nzi) {
 	    Check.state(false, "The output image must be smaller than the input");
+	  } if(nxi+_xloc > nxp || nzi+_zloc > nzp) {
+	    Check.state(false, "The input image will not be padded correctly."
+	        + "please increase padding or reduce xs and/or zs");
 	  }
-	  for(int ix = _xloc; ix < nxi; ix++){
-	    for(int iz = _zloc; iz < nzi; iz++) {
-	      img[iz][ix] = pimg[iz][ix];
+	  for(int ix = 0; ix < nxi; ix++){
+	    for(int iz = 0; iz < nzi; iz++) {
+	      img[iz][ix] = pimg[iz+_zloc][ix+_xloc];
 	    }
 	  }
 	}
