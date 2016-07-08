@@ -29,9 +29,19 @@ public class ZeroPadTest extends TestCase {
   }
   
   public void testDpImg() {
-    int nx = 100; int nz = 100;
+    int nxm = 100; int nzm = 100;
+    int nxd = 200; int nzd = 200;
     int xs = 2; int zs = 2;
+    float[][] m = sub(randfloat(nxm,nzm),0.5f);
+    float[][] d = sub(randfloat(nxd,nzd),0.5f);
+    float[][] ms = zerofloat(nxm,nzm);
+    float[][] ds = zerofloat(nxd,nzd);
     ZeroPad zp = new ZeroPad(xs,zs);
+    zp.forward(m, ds);
+    zp.adjoint(d, ms);
+    float dotm = dot(m,ms);
+    float dotd = dot(d,ds);
+    assertEquals(dotm,dotd,0.00001f);
   }
   
   private static float dot(float[] x, float[] y) {
