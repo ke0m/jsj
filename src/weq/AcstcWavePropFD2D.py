@@ -26,21 +26,28 @@ from edu.mines.jtk.util.ArrayMath import *
 from weq import *
 
 def main(args):
-  #goBuildVelModel()
+  goBuildVelModel()
   #goBuildRickerSource()
   #goPadAndInterpSource()
   #goGetTSlice()
   goApplyStencil()
+  #goTestPoints()
 
 def goBuildVelModel():
-  nx,nz = 100,100
-  dx,dz = 1.0,1.0
-  fx,fz = 0.0,0.0
-  sx = Sampling(nx,dx,fx)
-  sz = Sampling(nz,dz,fz)
-  vel = zerofloat(nx,nz)
+  nx,nz   = 100,100
+  nxp,nzp = 200,200
+  dx,dz   = 1.0,1.0
+  fx,fz   = 0.0,0.0
+  sx      = Sampling(nx,dx,fx)
+  sz      = Sampling(nz,dz,fz)
+  sxp     = Sampling(nxp,dx,fx)
+  szp     = Sampling(nzp,dz,fz)
+  vel     = zerofloat(nx,nz)
+  velp    = zerofloat(nxp,nzp)
   fill(1500.0,vel)
-  plotVel(vel,sx,sz,png='velconst')
+  zp = ZeroPad(50,50)
+  zp.forward(vel,velp)
+  plotVel(velp,sxp,szp,png='velconst')
 
 def goBuildRickerSource():
   nt  = 250
@@ -141,6 +148,19 @@ def readBayImage():
   ais.close()
   return x,s1,s2
 
+def goTestPoints():
+  t1 = zerofloat(2,2)
+  t2 = zerofloat(2,2)
+  t1[0][0] = 1.0
+  t1[0][1] = 2.0
+  t1[1][0] = 1.0
+  t1[1][1] = 2.0
+  t2[0][0] = 3.0
+  t2[0][1] = 4.0
+  t2[1][0] = 5.0
+  t2[1][1] = 6.0
+  plotMultiPoints(t1,t2)
+
 #############################################################################
 # plotting
 
@@ -157,7 +177,7 @@ def plotVel(v,sx,sz,cmin=0,cmax=0,png=None):
   pp.setVInterval(25.0)
   pv = pp.addPixels(sx,sz,v)
   pv.setColorModel(ColorMap.JET)
-  pv.setInterpolation(PixelsView.Interpolation.LINEAR)
+  pv.setInterpolation(PixelsView.Interpolation.NEAREST)
   cb = pp.addColorBar('m/s')
   cb.setWidthMinimum(160)
   pf = PlotFrame(pp)
@@ -203,6 +223,13 @@ def plotBay(b,cmin=0,cmax=0,png=None):
     pv.setPercentiles(1,99)
   if pngDir and png:
     pf.paintToPng(360,3.3,pngDir+png+".png")
+
+def plotMultiPoints(w1,w2):
+  pp = PlotPanel(PlotPanel.Orientation.X1DOWN_X2RIGHT)
+  pp.setBackground(backgroundColor)
+  pv = pp.addPoints(w1,w2)
+  pf = PlotFrame(pp)
+  pf.setVisible(True)
 
 #############################################################################
 # Do everything on Swing thread.
