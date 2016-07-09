@@ -25,37 +25,6 @@ public class Stencil4Test extends TestCase {
     junit.textui.TestRunner.run(suite);
   }
   
-  public void testDppb(){
-    int nx = 100; int nz = 100; int nt = 100;
-    Sampling sx = new Sampling(nx+4,1.0,0.0);
-    Sampling sz = new Sampling(nz+4,1.0,0.0);
-    Sampling st = new Sampling(nt,0.1,1.0);
-    ZeroPad zp = new ZeroPad(2,2);
-    Random r = new Random(1992);
-    float f = 0.00001f;
-    float [][] mp  = zerofloat(nx+4,nz+4);
-    float [][] dp  = zerofloat(nx+4,nz+4);
-    float [][] m   = sub(randfloat(r,nx,nz),0.5f);
-    float [][] d   = sub(randfloat(r,nx,nz),0.5f);
-    float [][] ms  = zerofloat(nx+4,nz+4);
-    float [][] ds  = zerofloat(nx+4,nz+4);
-    float [][] mst = zerofloat(nx,nz);
-    float [][] dst = zerofloat(nx,nz);
-    zp.forward(m, mp);
-    zp.forward(d, dp);
-    SimplePlot sp = new SimplePlot();
-    PixelsView pv = sp.addPixels(dp);
-    pv.setInterpolation(PixelsView.Interpolation.NEAREST);
-    AcstcWfldFD prp = new AcstcWfldFD(sx,sz,st,abs(m),f);
-    prp.forward4Stencil(mp,ds);
-    prp.adjoint4Stencil(dp,ms);
-    zp.adjoint(ds, dst);
-    zp.adjoint(ms, mst);
-    float dotm = dot(m,mst);
-    float dotd = dot(d,dst);
-    assertEquals(dotm,dotd,0.0001f);
-  }
-  
   public void testDppv() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     int nx = 100; int nz = 100; int nt = 100;
     Sampling sx = new Sampling(nx+4,1.0,0.0);
