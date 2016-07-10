@@ -27,10 +27,10 @@ from weq import *
 
 def main(args):
   #goBuildVelModel()
-  #goBuildRickerSource()
-  #goPadAndInterpSource()
+  goBuildRickerSource()
+  goPadAndInterpSource()
   #goGetTSlice()
-  goApplyStencil()
+  #goApplyStencil()
   #goTestPoints()
   #goMovie()
 
@@ -99,9 +99,9 @@ def goPadAndInterpSource():
   si.forward(spsrc,ispsrc)
   # Applies the adjoint to the interpolated wavelet
   si.adjoint(ispsrc,aspsrc)
-  sf3a = SimpleFloat3(aspsrc)
-  sf3a.get3(ntsrc,50,0,0,abak)
-  plotWavelet(abak,stp,"ricker")
+  sf3a = SimpleFloat3(ispsrc)
+  sf3a.get3(nt,50,0,0,isbak)
+  plotWavelet(isbak,istp,"ricker")
 
 def goGetTSlice():
   nx,nz             = 100,100
@@ -168,7 +168,7 @@ def goMovie():
 #############################################################################
 # plotting
 
-pngDir = "/home/joe/phd/projects/weq/fig/"
+pngDir = "/home/joe/phd/projects/jsj/fig/"
 
 backgroundColor = Color(0xfd,0xfe,0xff)
 
