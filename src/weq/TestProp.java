@@ -1,8 +1,13 @@
 package weq;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import edu.mines.jtk.awt.ColorMap;
 import edu.mines.jtk.dsp.*;
 import edu.mines.jtk.io.*;
-import edu.mines.jtk.mosaic.SimplePlot;
+import edu.mines.jtk.mosaic.*;
 import weq.AcstcWfldFD.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
@@ -12,61 +17,77 @@ import java.nio.ByteOrder;
 
 public class TestProp {
 
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-	
-	  ArrayInputStream ais = new ArrayInputStream("/home/joe/phd/projects/weq/src/weq/bay.dat");
-	  
-	 float[][] x = zerofloat(1050,1600);
-	 
-	 ais.readFloats(x);
-	 
-	 SimplePlot sp = new SimplePlot();
-	 
-	 sp.asPixels(x);
-	  
-	  /*
-		int nx = 100;
-		int nz = 100;
-		int nt = 1000;
-		double dx = 1.0;
-		double dz = 1.0;
-		double dt = 0.00045;
-		double dtsrc = 0.008;
-		double fx = 0.0;
-		double fz = 0.0;
-		double ft = 0.0;
-		double ftsrc = -1.0;
-		
-		float[][] vel = new float[nx][nz];
-		
-		fill(1500.f,vel);
-		
-		double f = 30.0;
-		float fmax = 100.f;
-		
-		Sampling st = new Sampling(nt,dt,ft);
-		Sampling sx = new Sampling(nx,dx,fx);
-		Sampling sz = new Sampling(nz,dz,fz);
-		Sampling stsrc = new Sampling(nt,dtsrc,ftsrc);
+  public static void main(String[] args) throws IOException {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        go();
+      }
+    });
+  }
+  static int total = 4;
+  static int rate = 100;
+  
+  public static void go() {
+    
+    // Create array
+    float[][] array = new float[50][50];
+    for (int i=0; i<array.length; ++i)
+      for (int j=0; j<array[0].length; ++j)
+        array[i][j] = (float)(i+j)*(i-j);
 
-		AcstcWfldFD wf = new AcstcWfldFD(sx,sz,st,vel,fmax);
-		Source src     = new Source(stsrc);
-		
-		float[] rck = new float[nt];
-		
-		rck = src.ricker(f);
-		
-		float[][][] psrc = new float[nx][nz][nt];
+    // Build Panels
+    PlotPanel panel = new PlotPanel();
+    JPanel bPanel = new JPanel();
+    bPanel.setLayout(new GridLayout(1,2));
+    
+    // Create and set view
+    final PixelsView pv = panel.addPixels(array);
+    pv.setColorModel(ColorMap.JET);
+    panel.addColorBar();
+ 
+    //Interactive components
+    final JTextField fps = new JTextField("100",4);
+    final JToggleButton b = new JToggleButton("Start/Stop");
 
-		//psrc = zerofloat(nx,nz,nt);
-		
-		//src.zeroPadSrc(rck, psrc, 50, 0);
-		System.out.println("Complete");
-		*/
-		
-		//test = wf.rickerSource(st,f);
-
-	}
-
+    //Action listeners
+    ActionListener animate = new ActionListener() {
+      private int index = 0;
+      public void actionPerformed(ActionEvent e) {
+        float[][] array = randfloat(50,50);
+        if(index < total) {
+          index++;
+        }
+        else {
+          index=0;
+        }
+        pv.set(array);
+      }
+    };
+    final Timer timer = new Timer(rate,animate);
+    
+    ActionListener startStop = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (b.isSelected()) {
+          timer.setDelay(rate);
+          timer.start();
+        } else {
+          timer.stop();
+        }
+      }
+    };
+    
+    fps.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        rate = Integer.parseInt(fps.getText());
+      }
+    });
+    
+    b.addActionListener(startStop);
+    bPanel.add(b);
+    bPanel.add(fps);
+    bPanel.add(new Label("Speed:",Label.RIGHT));
+    PlotFrame frame = new PlotFrame(panel);
+    frame.add(bPanel,BorderLayout.SOUTH);
+    frame.setVisible(true);
+  }
 }
