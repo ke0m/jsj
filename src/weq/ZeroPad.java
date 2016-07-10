@@ -26,6 +26,20 @@ public class ZeroPad {
 	public ZeroPad(int xloc, int zloc) {
 		_xloc = xloc; _zloc = zloc;
 	}
+	
+	/**
+	 * Constructs a zero pad operator
+	 * for padding an input signal or image
+	 * @param xloc x location of source or top left
+	 *        pixel in input image
+	 * @param zloc z location of source or top
+	 *        left pixel in input image
+	 * @param val value other than zero to pad signal/image
+	 */
+	public ZeroPad(int xloc, int zloc, float val) {
+		_xloc = xloc; _zloc = zloc;
+		_val = val;
+	}
 		
 	/**
 	 * Applies the forward of the zero pad operator
@@ -53,7 +67,7 @@ public class ZeroPad {
 	    Check.state(false, "The input image will not be padded correctly."
 	        + "please increase padding or reduce xs and/or zs");
 	  }
-	  fill(0.f,pimg);
+	  fill(_val,pimg);
 	  for(int ix = 0; ix < nxi; ix++) {
 	    for(int iz = 0; iz < nzi; iz++) {
 	      pimg[iz+_zloc][ix+_xloc] = img[iz][ix];
@@ -99,4 +113,5 @@ public class ZeroPad {
 	// private
 	
 	private int _xloc, _zloc;
+	private float _val;
 }
