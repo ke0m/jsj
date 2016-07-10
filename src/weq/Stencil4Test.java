@@ -31,7 +31,7 @@ public class Stencil4Test extends TestCase {
     Sampling sz = new Sampling(nz+4,1.0,0.0);
     Sampling st = new Sampling(nt,0.5,1.0);
     Random r = new Random(1992);
-    ZeroPad zp = new ZeroPad(2,2);
+    ZeroPad zp = new ZeroPad(2,2,0.0f);
     float f = 0.00001f;
     float [][] mp  = zerofloat(nx+4,nz+4);
     float [][] dp  = zerofloat(nx+4,nz+4);
