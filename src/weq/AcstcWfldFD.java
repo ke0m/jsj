@@ -14,8 +14,8 @@ import static edu.mines.jtk.util.ArrayMath.*;
  * @version 2016.06.11 
  */
 
-//TODO: Pass a coeffiecient operator that allows for easy exchange of
-//      boundary conditions
+//TODO: Pass a coefficient operator that allows for easy exchange of
+//      boundary conditions?
 
 public class AcstcWfldFD {
 	
@@ -53,11 +53,11 @@ public class AcstcWfldFD {
 	  sr3.get12(_nx, _nz, 0, 0, 0, slc); // Initial
 	  wf3.set12(_nx, _nz, 0, 0, 1, slc); // condition
 	  for(int it=2; it<_nt; ++it){
+	    wf3.get12(_nx, _nz, 0, 0, it, slc);
+	    forward4Stencil(slc,lap);
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
 	        float v2d2 = (_v[iz][ix]*_v[iz][ix])*(float)(_dt*_dt);
-	        wf3.get12(_nx, _nz, 0, 0, it, slc);
-	        forward4Stencil(slc,lap);
 	        wfld[it][iz][ix] = src[it-1][iz][ix] + v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix] - wfld[it-2][iz][ix];
 	      }
 	    }
