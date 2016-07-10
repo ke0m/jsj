@@ -1,4 +1,4 @@
-package weq;
+package view;
 
 /****************************************************************************
 Copyright 2009, Colorado School of Mines and others.
