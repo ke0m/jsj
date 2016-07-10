@@ -26,12 +26,13 @@ from edu.mines.jtk.util.ArrayMath import *
 from weq import *
 
 def main(args):
-  goBuildVelModel()
+  #goBuildVelModel()
   #goBuildRickerSource()
   #goPadAndInterpSource()
   #goGetTSlice()
   goApplyStencil()
   #goTestPoints()
+  #goMovie()
 
 def goBuildVelModel():
   nx,nz   = 100,100
@@ -161,6 +162,9 @@ def goTestPoints():
   t2[1][1] = 6.0
   plotMultiPoints(t1,t2)
 
+def goMovie():
+  testMovie()
+
 #############################################################################
 # plotting
 
@@ -230,6 +234,23 @@ def plotMultiPoints(w1,w2):
   pv = pp.addPoints(w1,w2)
   pf = PlotFrame(pp)
   pf.setVisible(True)
+
+def testMovie():
+  pp = PlotPanel(PlotPanel.Orientation.X1DOWN_X2RIGHT)
+  pp.setBackground(backgroundColor)
+  cb = pp.addColorBar()
+  frm = zerofloat(10,10)
+  fill(1.0,frm)
+  pv = pp.addPixels(frm)
+  pv.setColorModel(ColorMap.JET)
+  pv.addColorMapListener(cb)
+  pf = PlotFrame(pp)
+  pf.setVisible(True)
+  for i in range(2,10):
+    f = float(i)
+    fill(f,frm)
+    pv.set(frm)
+    pf.setVisible(True)
 
 #############################################################################
 # Do everything on Swing thread.
