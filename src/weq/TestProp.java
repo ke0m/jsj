@@ -16,7 +16,7 @@ public class TestProp {
     int nts = 625; int nt  = 2500;
     
     //TODO: How to best set these?
-    double fpek = 15.0f; float fmax = 50.0f;
+    float fpek = 15.0f; float fmax = 50.0f;
     int xsrc = 150; int zsrc = 100;
     
     /*      Intervals and first         */
@@ -33,18 +33,18 @@ public class TestProp {
     Sampling sts = new Sampling(nts, (double)dts, (double)fts);
     
     float []   src     = zerofloat(nts);
-    float [][] vel     = zerofloat(nxp,nzp);
-    float [][][] psrc  = zerofloat(nxp,nzp,nts);
-    float [][][] spsrc = zerofloat(nxp,nzp,nts);
-    float [][][] sinp  = zerofloat(nxp,nzp,nt);
-    float [][][] wfld  = zerofloat(nxp,nzp,nt);
+    float [][] vel     = zerofloat(nzp,nxp);
+    float [][][] psrc  = zerofloat(nzp,nxp,nts);
+    float [][][] spsrc = zerofloat(nzp,nxp,nts);
+    float [][][] sinp  = zerofloat(nzp,nxp,nt);
+    float [][][] wfld  = zerofloat(nzp,nxp,nt);
+    float [][][] wfldt = zerofloat(nz,nx,nt);
     
     fill(3000.f, vel);
     
     /*        Wave equation objects         */
     Source rck      = new Source(sts);
-    ZeroPad zps     = new ZeroPad(xsrc,zsrc);
-    ZeroPad zpv     = new ZeroPad(100,100,1500.0f);
+    ZeroPad zps     = new ZeroPad(zsrc,xsrc);
     SourceScale ss  = new SourceScale(dt,vel);
     SourceInterp si = new SourceInterp(sts,st);
     AcstcWfldFD prp = new AcstcWfldFD(sxp, szp, st, vel, fmax);
@@ -58,7 +58,7 @@ public class TestProp {
    
     /* View the wavefield */
     for(int i=0; i < 300; i+=20)
-      viewSlice(wfld,i,sxp,szp);
+      viewSlice(wfld,i,sx,sz);
   }
   
   private static void plotSinp(float[][][] sinp,float dt,int nt,int xsrc,int zsrc) {
@@ -70,13 +70,14 @@ public class TestProp {
     SimplePlot.asSequence(stp, slc);
   }
   
-  private static void viewSlice(float[][][] wfld, int slcnum, Sampling sxp, Sampling szp) {
+  private static void viewSlice
+  (float[][][] wfld, int slcnum, Sampling sx, Sampling sz) {
     SimpleFloat3 w3 = new SimpleFloat3(wfld);
-    int nx = wfld[0].length; int nz = wfld[0][0].length;
-    float [][] tslc = zerofloat(nx,nz);
-    w3.get12(nx, nz, 0, 0, slcnum, tslc);
-    PlotPanel pp = new PlotPanel();
-    PixelsView pv = pp.addPixels(sxp, szp, tslc);
+    int nx = sx.getCount(); int nz = sz.getCount(); 
+    float [][] tslc = zerofloat(nz,nx);
+    w3.get12(nz, nx, 100, 100, slcnum, tslc);
+    PlotPanel pp = new PlotPanel(PlotPanel.Orientation.X1DOWN_X2RIGHT);
+    pp.addPixels(sz,sx,tslc);
     pp.addColorBar();
     PlotFrame pf = new PlotFrame(pp);
     pf.setVisible(true);
