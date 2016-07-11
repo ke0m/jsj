@@ -42,15 +42,15 @@ public class SourceInterp {
     SimpleFloat3 sf3 = new SimpleFloat3(sinp);
     float[] crs = zerofloat(_nts);
     float[] fin = zerofloat(_ntf);
-    int nx    = psrc[0][0].length;
-    int nz    = psrc[0].length;
+    int nz    = psrc[0][0].length;
+    int nx    = psrc[0].length;
     LinearInterpolator li = new LinearInterpolator();
     li.setUniform(_nts, _dts, _fts, crs);
-    for(int iz=0; iz<nz; ++iz) {
-      for(int ix=0; ix<nx; ++ix){
-        sc3.get3(_nts,ix,iz,0,crs);
+    for(int ix=0; ix<nx; ++ix) {
+      for(int iz=0; iz<nz; ++iz){
+        sc3.get3(_nts,iz,ix,0,crs);
         li.interpSimp(_ntf,_dtf,_ftf,fin);
-        sf3.set3(_ntf,ix,iz,0,fin);
+        sf3.set3(_ntf,iz,ix,0,fin);
       }
     }
   }
@@ -69,16 +69,16 @@ public class SourceInterp {
     SimpleFloat3 sf3 = new SimpleFloat3(sinp);
     float[] crs = zerofloat(_nts);
     float[] fin = zerofloat(_ntf);
-    int nx    = psrc[0][0].length;
-    int nz    = psrc[0].length;
+    int nz    = psrc[0][0].length;
+    int nx    = psrc[0].length;
     LinearInterpolator li = new LinearInterpolator();
     li.setUniform(_nts, _dts, _fts, fin);
-    for(int iz=0; iz<nz; ++iz){
-      for(int ix=0; ix<nx; ++ix) {
-        sf3.get3(_ntf,ix,iz,0,fin);
+    for(int ix=0; ix<nx; ++ix){
+      for(int iz=0; iz<nz; ++iz) {
+        sf3.get3(_ntf,iz,ix,0,fin);
         fill(0.f,crs);
         li.adjInterpSimp(_ntf,_dtf,_ftf,crs);
-        sc3.set3(_nts,ix,iz,0,crs);
+        sc3.set3(_nts,iz,ix,0,crs);
       }
     }
   }
