@@ -7,6 +7,13 @@ import edu.mines.jtk.dsp.*;
 
 import static edu.mines.jtk.util.ArrayMath.*;
 
+/**
+ * Tests {@link weq.SourceInterp}.
+ * @author Joseph Jennings, Stanford University
+ * @acknowledgement Dave Hale, Colorado School of Mines
+ * @version 2016.07.11
+ */
+
 public class SourceInterpTest extends TestCase{
   public static void main(String[] args) {
     TestSuite suite = new TestSuite(SourceInterpTest.class);
@@ -21,10 +28,10 @@ public class SourceInterpTest extends TestCase{
     Sampling ss = new Sampling(nts,dts,fts);
     Sampling sf = new Sampling(ntf,dtf,ftf);
     SourceInterp sint = new SourceInterp(ss,sf);
-    float[][][] m = sub(randfloat(nx,nz,nts),0.5f);
-    float[][][] d = sub(randfloat(nx,nz,ntf),0.5f);
-    float[][][] ms = zerofloat(nx,nz,nts);
-    float[][][] ds = zerofloat(nx,nz,ntf);
+    float[][][] m = sub(randfloat(nz,nx,nts),0.5f);
+    float[][][] d = sub(randfloat(nz,nx,ntf),0.5f);
+    float[][][] ms = zerofloat(nz,nx,nts);
+    float[][][] ds = zerofloat(nz,nx,ntf);
     sint.forward(m, ds);
     sint.adjoint(d, ms);
     float dotm = dot(m,ms);
