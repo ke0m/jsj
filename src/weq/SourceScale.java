@@ -8,7 +8,7 @@ package weq;
  * @acknowledgement Guillaume Barnier; Ali Almomin, Stanford University
  *                   Simon Luo; Dave Hale, Colorado School of Mines
  *                   
- * @version 2016.06.16
+ * @version 2016.07.11
  */
 
 public class SourceScale {
@@ -30,15 +30,15 @@ public class SourceScale {
    * @param spsrc scaled padded source wavelet
    */
 	public void forward(float[][][] psrc, float spsrc[][][]) {
-	  int nx    = psrc[0][0].length;
-	  int nz    = psrc[0].length;
+	  int nz    = psrc[0][0].length;
+	  int nx    = psrc[0].length;
 	  int ntsrc = psrc.length;
 	  for(int it = 0; it < ntsrc; ++it){
-	    for(int iz = 0; iz < nz; ++iz){
-	      for(int ix = 0; ix < nx; ++ix){
-	        float v2  = _vel[iz][ix]*_vel[iz][ix];
+	    for(int ix = 0; ix < nx; ++ix){
+	      for(int iz = 0; iz < nz; ++iz){
+	        float v2  = _vel[ix][iz]*_vel[ix][iz];
 	        float dt2 = _dtwf*_dtwf;
-	        spsrc[it][iz][ix] += -v2*dt2*psrc[it][iz][ix];
+	        spsrc[it][ix][iz] += -v2*dt2*psrc[it][ix][iz];
 	      }
 	    }
 	  }
@@ -50,15 +50,15 @@ public class SourceScale {
 	 * @param psrc padded source wavelet
 	 */
 	public void adjoint(float[][][] spsrc, float psrc[][][]) {
-	  int nx    = psrc[0][0].length;
-	  int nz    = psrc[0].length;
+	  int nz    = psrc[0][0].length;
+	  int nx    = psrc[0].length;
 	  int ntsrc = psrc.length;
 	  for(int it = 0; it < ntsrc; ++it){
-	    for(int iz = 0; iz < nz; ++iz){
-	      for(int ix = 0; ix < nx; ++ix){
-	        float v2  = _vel[iz][ix]*_vel[iz][ix];
+	    for(int ix = 0; ix < nx; ++ix){
+	      for(int iz = 0; iz < nz; ++iz){
+	        float v2  = _vel[ix][iz]*_vel[ix][iz];
 	        float dt2 = _dtwf*_dtwf;
-	        psrc[it][iz][ix] += -v2*dt2*spsrc[it][iz][ix];
+	        psrc[it][ix][iz] += -v2*dt2*spsrc[it][ix][iz];
 	      }
 	    }
 	  }
