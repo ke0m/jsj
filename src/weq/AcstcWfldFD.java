@@ -4,6 +4,9 @@ import edu.mines.jtk.dsp.*;
 import edu.mines.jtk.util.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
+import edu.mines.jtk.mosaic.*;
+import edu.mines.jtk.mosaic.PixelsView.Interpolation;
+
 /** 
  * Finite difference acoustic wave equation
  * solver for constant density.
@@ -53,7 +56,7 @@ public class AcstcWfldFD {
 	  sr3.get12(_nx, _nz, 0, 0, 0, slc); // Initial
 	  wf3.set12(_nx, _nz, 0, 0, 1, slc); // condition
 	  for(int it=2; it<_nt; ++it){
-	    wf3.get12(_nx, _nz, 0, 0, it, slc);
+	    wf3.get12(_nx, _nz, 0, 0, it-1, slc);
 	    forward4Stencil(slc,lap);
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
@@ -95,6 +98,7 @@ public class AcstcWfldFD {
 		float chk    = 0.f;
 		
 		chk = (float)(_dt*vmax/(min(_dx,_dz)));
+		System.out.printf("CFL=%f\n",chk);
 		
 		if(chk < _CFL) {
 			stable = true;
@@ -119,6 +123,7 @@ public class AcstcWfldFD {
 		float ppl  = 0.f;
 		
 		ppl = (float)(vmin/(fmax*max(_dx,_dz)));
+		System.out.printf("PPL=%f\n", ppl);
 		
 		if(ppl < _T2S4) {
 			ppl = 0.f;
