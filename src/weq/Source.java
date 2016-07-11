@@ -31,12 +31,13 @@ public class Source {
 	 * @param f the peak frequency of the wavelet
 	 * @return the 1D wavelet
 	 */
-	public float[] ricker(double f) {
+	public float[] ricker(float f) {
 		float[] ricker = new float[_ntsrc];
+		double fd = (double)f;
 		
 		for(int it = 0; it < _ntsrc; ++it) {
 			double t = _ftsrc + it*_dtsrc;
-			float pift = (float)((DBL_PI*DBL_PI)*(f*f)*(t*t));
+			float pift = (float)((DBL_PI*DBL_PI)*(fd*fd)*(t*t));
 			ricker[it] = (1 - 2 *pift)*(exp(-pift));
 		}
 		return ricker;
