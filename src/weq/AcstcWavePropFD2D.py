@@ -27,9 +27,9 @@ from weq import *
 
 def main(args):
   #goBuildVelModel()
-  goBuildRickerSource()
-  goPadAndInterpSource()
-  #goGetTSlice()
+  #goBuildRickerSource()
+  #goPadAndInterpSource()
+  goGetTSlice()
   #goApplyStencil()
   #goTestPoints()
   #goMovie()
@@ -104,7 +104,7 @@ def goPadAndInterpSource():
   plotWavelet(isbak,istp,"ricker")
 
 def goGetTSlice():
-  nx,nz             = 100,100
+  nx,nz             = 10,10
   ftsrc,dtsrc,ntsrc = -0.3,0.0018,250
   fpek              = 30.0
   xsrc,zsrc         = 50,0
@@ -113,16 +113,17 @@ def goGetTSlice():
   src               = Source(stsrc)
   # Computes the ricker wavelet
   rck               = src.ricker(fpek)
+  print rck
   plotWavelet(rck,stp,"ricker")
   psrc              = zerofloat(nx,nz,ntsrc)
   zp                = ZeroPad(xsrc,zsrc);
   # Zero padding the source
   zp.forward(rck,psrc)
   sf3 = SimpleFloat3(psrc)
-  psrc[0][0][0] = 2.0
+  #psrc[0][0][0] = 2.0
   slc = zerofloat(nx,nz)
-  #sf3.get12(nx,nz,0,0,167,slc)
-  sf3.get12(nx,nz,0,0,0,slc)
+  sf3.get23(nx,nz,0,0,167,slc)
+  #sf3.get12(nx,nz,0,0,0,slc)
   print slc
 
 def goApplyStencil():
