@@ -11,7 +11,7 @@ import java.util.Random;
  * Tests {@link weq.SourceScale}.
  * @author Joseph Jennings, Stanford University
  * @acknowledgement Dave Hale, Colorado School of Mines
- * @version 2016.06.16
+ * @version 2016.07.11
  */
 
 public class SourceScaleTest extends TestCase{
@@ -24,12 +24,12 @@ public class SourceScaleTest extends TestCase{
     int nx = 100; int nz = 100; int nts = 250;
     float dt = 1.f;
     Random r = new Random(1992);
-    float vel[][] = sub(randfloat(r,nx,nz),0.5f);
+    float vel[][] = sub(randfloat(r,nz,nx),0.5f);
     SourceScale ssc = new SourceScale(dt,vel);
-    float[][][] m = sub(randfloat(r,nx,nz,nts),0.5f);
-    float[][][] d = sub(randfloat(r,nx,nz,nts),0.5f);
-    float[][][] ms = zerofloat(nx,nz,nts);
-    float[][][] ds = zerofloat(nx,nz,nts);
+    float[][][] m = sub(randfloat(r,nz,nx,nts),0.5f);
+    float[][][] d = sub(randfloat(r,nz,nx,nts),0.5f);
+    float[][][] ms = zerofloat(nz,nx,nts);
+    float[][][] ds = zerofloat(nz,nx,nts);
     ssc.forward(m, ds);
     ssc.adjoint(d, ms);
     float dotm = dot(m,ms);
