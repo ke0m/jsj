@@ -13,16 +13,16 @@ public class TestProp {
     /*          Sizes          */
     int nx  = 100; int nz  = 100;
     int nxp = 300; int nzp = 300;
-    int nts = 250; int nt  = 1000;
+    int nts = 625; int nt  = 2500;
     
     //TODO: How to best set these?
     double fpek = 15.0f; float fmax = 50.0f;
-    int xsrc = 50; int zsrc = 0;
+    int xsrc = 150; int zsrc = 100;
     
     /*      Intervals and first         */
-    float dx  = 1;       float dz = 1;
-    float dts = 0.0018f; float dt = 0.00045f;
-    float fts = -0.3f;   float ft = 0.0f;
+    float dx  = 10.0f;    float dz = 10.0f;
+    float dts = 0.004f; float dt = 0.001f;
+    float fts = -0.1f;   float ft = 0.0f;
     
     /*              Samplings                        */
     Sampling sxp = new Sampling(nxp, (double)dx , 0.0);
@@ -39,7 +39,7 @@ public class TestProp {
     float [][][] sinp  = zerofloat(nxp,nzp,nt);
     float [][][] wfld  = zerofloat(nxp,nzp,nt);
     
-    fill(1500.f, vel);
+    fill(3000.f, vel);
     
     /*        Wave equation objects         */
     Source rck      = new Source(sts);
@@ -56,6 +56,9 @@ public class TestProp {
     si.forward(spsrc, sinp);
     prp.forward(sinp, wfld);
    
+    /* View the wavefield */
+    for(int i=0; i < 300; i+=20)
+      viewSlice(wfld,i,sxp,szp);
   }
   
   private static void plotSinp(float[][][] sinp,float dt,int nt,int xsrc,int zsrc) {
@@ -65,5 +68,32 @@ public class TestProp {
     s3.get3(nt, xsrc, zsrc, 0, slc);
     dump(slc);
     SimplePlot.asSequence(stp, slc);
+  }
+  
+  private static void viewSlice(float[][][] wfld, int slcnum, Sampling sxp, Sampling szp) {
+    SimpleFloat3 w3 = new SimpleFloat3(wfld);
+    int nx = wfld[0].length; int nz = wfld[0][0].length;
+    float [][] tslc = zerofloat(nx,nz);
+    w3.get12(nx, nz, 0, 0, slcnum, tslc);
+    PlotPanel pp = new PlotPanel();
+    PixelsView pv = pp.addPixels(sxp, szp, tslc);
+    pp.addColorBar();
+    PlotFrame pf = new PlotFrame(pp);
+    pf.setVisible(true);
+    pf.setDefaultCloseOperation(PlotFrame.EXIT_ON_CLOSE);
+  }
+  
+  private static void sliceSource(
+      float[][][] sinp, Sampling sx, Sampling sz, Sampling st, int xs, int zs) {
+    SimpleFloat3 s3 = new SimpleFloat3(sinp);
+    int nx = sx.getCount(); int nz = sz.getCount(); int nt = st.getCount();
+    float[][] sslc = zerofloat(nx,nz);
+    float[] src = zerofloat(nt);
+    for(int it=0; it<nt-1; ++it){
+      s3.get12(nx, nz, 0, 0, it, sslc);
+      if(it%2 == 0) sinp[it+1][zs][xs] *= -1;
+      src[it] = sslc[zs][xs];
+    }
+    SimplePlot.asSequence(st,src);
   }
 }
