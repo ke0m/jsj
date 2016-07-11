@@ -8,7 +8,7 @@ import junit.framework.TestCase;
  * Tests {@link weq.ZeroPad}.
  * @author Joseph Jennings, Stanford University
  * @acknowledgement Dave Hale, Colorado School of Mines
- * @version 2016.06.16
+ * @version 2016.07.06
  */
 public class ZeroPadTest extends TestCase {
 
@@ -17,10 +17,10 @@ public class ZeroPadTest extends TestCase {
     int xs = 50; int zs = 0;
     int nts = 250;
     float[] m  = sub(randfloat(nts),0.5f);
-    float[][][] d  = sub(randfloat(nx,nz,nts),0.5f);
+    float[][][] d  = sub(randfloat(nz,nx,nts),0.5f);
     float[] ms = zerofloat(nts);
-    float[][][] ds = zerofloat(nx,nz,nts);
-    ZeroPad zp = new ZeroPad(xs,zs);
+    float[][][] ds = zerofloat(nz,nx,nts);
+    ZeroPad zp = new ZeroPad(zs,xs);
     zp.forward(m, ds);
     zp.adjoint(d, ms);
     float dotm = dot(m,ms);
@@ -32,11 +32,11 @@ public class ZeroPadTest extends TestCase {
     int nxm = 100; int nzm = 100;
     int nxd = 200; int nzd = 200;
     int xs = 2; int zs = 2;
-    float[][] m = sub(randfloat(nxm,nzm),0.5f);
-    float[][] d = sub(randfloat(nxd,nzd),0.5f);
-    float[][] ms = zerofloat(nxm,nzm);
-    float[][] ds = zerofloat(nxd,nzd);
-    ZeroPad zp = new ZeroPad(xs,zs);
+    float[][] m = sub(randfloat(nzm,nxm),0.5f);
+    float[][] d = sub(randfloat(nzd,nxd),0.5f);
+    float[][] ms = zerofloat(nzm,nxm);
+    float[][] ds = zerofloat(nzd,nxd);
+    ZeroPad zp = new ZeroPad(zs,xs);
     zp.forward(m, ds);
     zp.adjoint(d, ms);
     float dotm = dot(m,ms);
