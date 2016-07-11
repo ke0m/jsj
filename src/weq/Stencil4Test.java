@@ -15,7 +15,7 @@ import java.util.Random;
  * Tests {@link weq.AcstcWfldFD}.
  * @author Joseph Jennings
  * @acknowledgement Dave Hale, Colorado School of Mines
- * @version 2016.07.07
+ * @version 2016.07.11
  */
 
 public class Stencil4Test extends TestCase {
@@ -33,14 +33,14 @@ public class Stencil4Test extends TestCase {
     Random r = new Random(1992);
     ZeroPad zp = new ZeroPad(2,2,0.0f);
     float f = 0.00001f;
-    float [][] mp  = zerofloat(nx+4,nz+4);
-    float [][] dp  = zerofloat(nx+4,nz+4);
-    float [][] m  = sub(randfloat(r,nx,nz),0.5f);
-    float [][] d  = sub(randfloat(r,nx,nz),0.5f);
-    float [][] ms = zerofloat(nx+4,nz+4);
-    float [][] ds = zerofloat(nx+4,nz+4);
-    float [][] mst = zerofloat(nx,nz);
-    float [][] dst = zerofloat(nx,nz);
+    float [][] mp  = zerofloat(nz+4,nx+4);
+    float [][] dp  = zerofloat(nz+4,nx+4);
+    float [][] m  = sub(randfloat(r,nz,nx),0.5f);
+    float [][] d  = sub(randfloat(r,nz,nx),0.5f);
+    float [][] ms = zerofloat(nz+4,nx+4);
+    float [][] ds = zerofloat(nz+4,nx+4);
+    float [][] mst = zerofloat(nz,nx);
+    float [][] dst = zerofloat(nz,nx);
     zp.forward(m, mp);
     zp.forward(d, dp);
     AcstcWfldFD prp = new AcstcWfldFD(sx,sz,st,abs(m),f);
