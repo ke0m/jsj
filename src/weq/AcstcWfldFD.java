@@ -4,9 +4,6 @@ import edu.mines.jtk.dsp.*;
 import edu.mines.jtk.util.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
-import edu.mines.jtk.mosaic.*;
-import edu.mines.jtk.mosaic.PixelsView.Interpolation;
-
 /** 
  * Finite difference acoustic wave equation
  * solver for constant density.
@@ -14,7 +11,7 @@ import edu.mines.jtk.mosaic.PixelsView.Interpolation;
  * @author Joseph Jennings, Stanford University
  * @acknowledgements Guillaume Barnier; Ali Almomin, Stanford University
  *                   Simon Luo; Dave Hale, Colorado School of Mines
- * @version 2016.06.11 
+ * @version 2016.07.10 
  */
 
 //TODO: Pass a coefficient operator that allows for easy exchange of
@@ -53,15 +50,15 @@ public class AcstcWfldFD {
 	  SimpleFloat3 wf3 = new SimpleFloat3(wfld);
 	  float[][] slc = zerofloat(_nz,_nx);
 	  float[][] lap = zerofloat(_nz,_nx);
-	  sr3.get12(_nx, _nz, 0, 0, 0, slc); // Initial
-	  wf3.set12(_nx, _nz, 0, 0, 1, slc); // condition
+	  sr3.get12(_nz, _nx, 0, 0, 0, slc); // Initial
+	  wf3.set12(_nz, _nx, 0, 0, 1, slc); // condition
 	  for(int it=2; it<_nt; ++it){
-	    wf3.get12(_nx, _nz, 0, 0, it-1, slc);
+	    wf3.get12(_nz, _nx, 0, 0, it-1, slc);
 	    forward4Stencil(slc,lap);
 	    for(int ix=0; ix<_nx; ++ix){
 	      for(int iz=0; iz<_nz; ++iz){
-	        float v2d2 = (_v[iz][ix]*_v[iz][ix])*(float)(_dt*_dt);
-	        wfld[it][iz][ix] = src[it-1][iz][ix] + v2d2*lap[iz][ix] + 2*wfld[it-1][iz][ix] - wfld[it-2][iz][ix];
+	        float v2d2 = (_v[ix][iz]*_v[ix][iz])*(float)(_dt*_dt);
+	        wfld[it][ix][iz] = src[it-1][ix][iz] + v2d2*lap[ix][iz] + 2*wfld[it-1][ix][iz] - wfld[it-2][ix][iz];
 	      }
 	    }
 	  }
@@ -141,11 +138,11 @@ public class AcstcWfldFD {
 	  float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
 	  for(int ix=2; ix<_nx-2; ++ix){
 	    for(int iz=2; iz<_nz-2; ++iz){
-	      lap[iz][ix] = a0* wfld[iz  ][ix  ] * (idx2 + idz2)   +
-	                    a1*(wfld[iz  ][ix+1] + wfld[iz  ][ix-1])*idx2 +
-	                    a2*(wfld[iz  ][ix+2] + wfld[iz  ][ix-2])*idx2 +
-	                    a1*(wfld[iz+1][ix  ] + wfld[iz-1][ix  ])*idz2 +
-	                    a2*(wfld[iz+2][ix  ] + wfld[iz-2][ix  ])*idz2;
+	      lap[ix][iz] = a0* wfld[ix  ][iz  ] * (idx2 + idz2)   +
+	                    a1*(wfld[ix  ][iz+1] + wfld[ix  ][iz-1])*idz2 +
+	                    a2*(wfld[ix  ][iz+2] + wfld[ix  ][iz-2])*idz2 +
+	                    a1*(wfld[ix+1][iz  ] + wfld[ix-1][iz  ])*idx2 +
+	                    a2*(wfld[ix+2][iz  ] + wfld[ix-2][iz  ])*idx2;
 	    }
 	  }
 	}
@@ -160,11 +157,11 @@ public class AcstcWfldFD {
 	  float idx2 = (float)(1/(_dx*_dx)); float idz2 = (float)(1/(_dz*_dz));
 	  for(int ix=2; ix<_nx-2; ++ix){
 	    for(int iz=2; iz<_nz-2; ++iz){
-	      wfld[iz][ix] = a0* lap[iz  ][ix  ] * (idx2 + idz2)   +
-	                     a1*(lap[iz  ][ix+1] + lap[iz  ][ix-1])*idx2 +
-	                     a2*(lap[iz  ][ix+2] + lap[iz  ][ix-2])*idx2 +
-	                     a1*(lap[iz+1][ix  ] + lap[iz-1][ix  ])*idz2 +
-	                     a2*(lap[iz+2][ix  ] + lap[iz-2][ix  ])*idz2;
+	      wfld[ix][iz] = a0* lap[ix  ][iz  ] * (idx2 + idz2)   +
+	                     a1*(lap[ix  ][iz+1] + lap[ix  ][iz-1])*idz2 +
+	                     a2*(lap[ix  ][iz+2] + lap[ix  ][iz-2])*idz2 +
+	                     a1*(lap[ix+1][iz  ] + lap[ix-1][iz  ])*idx2 +
+	                     a2*(lap[ix+2][iz  ] + lap[ix-2][iz  ])*idx2;
 	      }
 	   }
 	}
