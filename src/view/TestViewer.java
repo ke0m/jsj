@@ -6,6 +6,8 @@ import javax.swing.*;
 
 import edu.mines.jtk.awt.ColorMap;
 import edu.mines.jtk.mosaic.*;
+import edu.mines.jtk.util.*;
+
 import static edu.mines.jtk.util.ArrayMath.*;
 
 public class TestViewer {
@@ -18,16 +20,28 @@ public class TestViewer {
     });
   }
 
-  static int total = 4;
-  static int rate = 100;
 
   public static void go() {
 
+    final int[] rate = new int[1];
+    rate[0] = 100;
     // Create array
-    float[][] array = new float[50][50];
-    for (int i = 0; i < array.length; ++i)
-      for (int j = 0; j < array[0].length; ++j)
-        array[i][j] = (float) (i + j) * (i - j);
+    final float[][][] array = new float[3][50][50];
+    final int total = array.length;
+    final int ni = array[0].length; final int nj = array[0][0].length;
+    for(int k = 0; k < total; ++k) {
+      for (int j = 0; j < nj; ++j) {
+        for (int i = 0; i < ni; ++i) {
+          if(k == 0) {
+            array[k][j][i] = (float) (i + j) * (i - j);
+          } else if(k == 1) {
+            array[k][j][i] = (float) (i + j) * (i + j);
+          } else if(k == 2) {
+            array[k][j][i] = (float) (i - j) * (i - j);
+          }
+        }
+      }
+    }
 
     // Build Panels
     PlotPanel panel = new PlotPanel();
@@ -35,7 +49,10 @@ public class TestViewer {
     bPanel.setLayout(new GridLayout(1, 2));
 
     // Create and set view
-    final PixelsView pv = panel.addPixels(array);
+    final float[][] slice = zerofloat(ni,nj);
+    final SimpleFloat3 s3 = new SimpleFloat3(array);
+    s3.get12(ni, nj, 0, 0, 0, slice);
+    final PixelsView pv = panel.addPixels(slice);
     pv.setColorModel(ColorMap.JET);
     panel.addColorBar();
 
@@ -51,21 +68,21 @@ public class TestViewer {
       private int index = 0;
 
       public void actionPerformed(ActionEvent e) {
-        float[][] array = randfloat(50, 50);
-        if (index < total) {
+        if (index < total-1) {
           index++;
         } else {
           index = 0;
         }
-        pv.set(array);
+        s3.get12(ni, nj, 0, 0, index, slice);
+        pv.set(slice);
       }
     };
-    final Timer timer = new Timer(rate, animate);
+    final Timer timer = new Timer(rate[0], animate);
 
     ActionListener startStop = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (b.isSelected()) {
-          timer.setDelay(rate);
+          timer.setDelay(rate[0]);
           timer.start();
         } else {
           timer.stop();
@@ -75,7 +92,7 @@ public class TestViewer {
 
     fpscc.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent action) {
-        rate = Integer.parseInt((String) fpscc.getSelectedItem());
+        rate[0] = Integer.parseInt((String) fpscc.getSelectedItem());
       }
     });
 
