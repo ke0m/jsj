@@ -17,30 +17,13 @@ public class TestViewer {
   public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        float[][][] array = new float[3][50][50];
-        int total = array.length;
-        int ni = array[0].length;
-        int nj = array[0][0].length;
-        for (int k = 0; k < total; ++k) {
-          for (int j = 0; j < nj; ++j) {
-            for (int i = 0; i < ni; ++i) {
-              if (k == 0) {
-                array[k][j][i] = (float) (i + j) * (i - j);
-              } else if (k == 1) {
-                array[k][j][i] = (float) (i + j) * (i + j);
-              } else if (k == 2) {
-                array[k][j][i] = (float) (i - j) * (i - j);
-              }
-            }
-          }
-        }
-        TestViewer tst = new TestViewer();
-        tst.go(array);
+        float[][][] wfld = TestProp.computeWavefield();
+        go(wfld);
       }
     });
   }
 
-  public void go(float[][][] array) {
+  public static void go(float[][][] array) {
 
     final int total = array.length;
     final int ni = array[0].length;
@@ -57,11 +40,11 @@ public class TestViewer {
     final SimpleFloat3 s3 = new SimpleFloat3(array);
     s3.get12(ni, nj, 0, 0, 0, slice);
     final PixelsView pv = panel.addPixels(slice);
-    pv.setColorModel(ColorMap.JET);
-    pv.setClips(-2000, 8000); // TODO: will need to pass these as arguments
+    pv.setColorModel(ColorMap.GRAY);
+    // pv.setClips(-2000, 8000); // TODO: will need to pass these as arguments
     panel.addColorBar();
 
-    String[] sp = { "50", "100", "150", "200", "250", "300", "350" };
+    String[] sp = { "25", "50", "100", "150", "200", "250", "300", "350" };
     // Interactive components
     final JComboBox fpscc = new JComboBox(sp);
     final JToggleButton b = new JToggleButton("Start/Stop");
@@ -79,7 +62,7 @@ public class TestViewer {
           index = 0;
         }
         s3.get12(ni, nj, 0, 0, index, slice);
-        pv.setClips(-2000, 8000);
+        //pv.setClips(-2000, 8000);
         pv.set(slice);
       }
     };
