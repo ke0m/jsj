@@ -6,10 +6,14 @@ import edu.mines.jtk.mosaic.*;
 import edu.mines.jtk.util.*;
 import static edu.mines.jtk.util.ArrayMath.*;
 
-public class TestProp {
+public final class TestProp {
 
   public static void main(String[] args) {
     
+    float[][][] myw = TestProp.computeWavefield();
+  }
+  
+  public static float[][][] computeWavefield() {
     /*          Sizes          */
     int nx  = 100; int nz  = 100;
     int nxp = 300; int nzp = 300;
@@ -38,7 +42,6 @@ public class TestProp {
     float [][][] spsrc = zerofloat(nzp,nxp,nts);
     float [][][] sinp  = zerofloat(nzp,nxp,nt);
     float [][][] wfld  = zerofloat(nzp,nxp,nt);
-    float [][][] wfldt = zerofloat(nz,nx,nt);
     
     fill(3000.f, vel);
     
@@ -57,8 +60,9 @@ public class TestProp {
     prp.forward(sinp, wfld);
    
     /* View the wavefield */
-    for(int i=0; i < 300; i+=20)
-      viewSlice(wfld,i,sx,sz);
+    //for(int i=0; i < 300; i+=20)
+    //  viewSlice(wfld,i,sx,sz);
+    return wfld;
   }
   
   private static void plotSinp(float[][][] sinp,float dt,int nt,int xsrc,int zsrc) {
@@ -88,12 +92,12 @@ public class TestProp {
       float[][][] sinp, Sampling sx, Sampling sz, Sampling st, int xs, int zs) {
     SimpleFloat3 s3 = new SimpleFloat3(sinp);
     int nx = sx.getCount(); int nz = sz.getCount(); int nt = st.getCount();
-    float[][] sslc = zerofloat(nx,nz);
+    float[][] sslc = zerofloat(nz,nx);
     float[] src = zerofloat(nt);
     for(int it=0; it<nt-1; ++it){
-      s3.get12(nx, nz, 0, 0, it, sslc);
-      if(it%2 == 0) sinp[it+1][zs][xs] *= -1;
-      src[it] = sslc[zs][xs];
+      s3.get12(nz, nx, 0, 0, it, sslc);
+      if(it%2 == 0) sinp[it+1][xs][zs] *= -1;
+      src[it] = sslc[xs][zs];
     }
     SimplePlot.asSequence(st,src);
   }
